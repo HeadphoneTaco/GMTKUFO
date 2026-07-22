@@ -1,15 +1,16 @@
 using UnityEngine;
 
-public class PSBat : IState
+public class PSEating : IState
 {
     private PlayerController _player;
     
-    public PSBat(PlayerController player)
+    public PSEating(PlayerController player)
     {
         _player = player;
     }
-    // the player is a bat and can fly in 8 directions
-    // drain the bat meter, if it is empty: change back into mist
+    // play the eating animation
+    // exit into Idle
+    // 
     public void Enter()
     {
         
