@@ -54,6 +54,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private string _gameSceneName = "Game";
     [Tooltip("Scene loaded by ReturnToMenu(). Blank = don't load, just switch state.")]
     [SerializeField] private string _mainMenuSceneName = "MainMenu";
+    [Tooltip("Scene loaded by EndRun(). Blank = don't load, just switch state (panel-based end screen).")]
+    [SerializeField] private string _endSceneName = "EndScreen";
 
     [Header("Pause")]
     [Tooltip("If true, PauseGame() sets Time.timeScale = 0.")]
@@ -75,6 +77,8 @@ public class GameManager : Singleton<GameManager>
     public float NightProgress => _sunriseDuration <= 0f ? 0f : Mathf.Clamp01(_timeRemaining / _sunriseDuration);
     /// <summary>True once the sun has risen and score is draining.</summary>
     public bool IsAfterSunrise => _afterSunrise;
+    /// <summary>Score banked by the last EndRun(). Stable to read on a separate EndScreen scene.</summary>
+    public int LastBankedScore { get; private set; }
     /// <summary>Current shadow cover on the player, 0 (sun) .. 1 (shade).</summary>
     public float ShadowAmount => _shadowAmount;
 
@@ -181,10 +185,15 @@ public class GameManager : Singleton<GameManager>
     public void EndRun()
     {
         if (CurrentState == GameState.GameOver) return;
-        int finalScore = Score;
+        LastBankedScore = Score;
         if (_pauseFreezesTime) Time.timeScale = 1f; // don't leave time frozen on the results screen
         SetState(GameState.GameOver);
-        OnRunEnded?.Invoke(finalScore);
+        OnRunEnded?.Invoke(LastBankedScore);
+
+        // Separate-scenes flow: hand off to the EndScreen scene, which reads LastBankedScore.
+        // Leave _endSceneName blank to stay put (panel-based results in the current scene).
+        if (!string.IsNullOrEmpty(_endSceneName))
+            SceneManager.LoadScene(_endSceneName);
     }
 
     /// <summary>Freeze the run. Safe to call from a pause menu.</summary>
