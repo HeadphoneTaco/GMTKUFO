@@ -1,28 +1,29 @@
-using UnityEngine;
-
-public class PSEating : IState
+namespace _Project.Code.Gameplay.PlayerController
 {
-    private PlayerController _player;
+    public class PSEating : IState
+    {
+        private PlayerController _player;
     
-    public PSEating(PlayerController player)
-    {
-        _player = player;
-    }
-    // play the eating animation
-    // exit into Idle
-    // 
-    public void Enter()
-    {
+        public PSEating(PlayerController player)
+        {
+            _player = player;
+        }
+        // play the eating animation
+        // exit into Idle
+        // 
+        public void Enter()
+        {
         
-    }
+        }
 
-    public void Execute()
-    {
+        public void Execute()
+        {
 
-    }
+        }
 
-    public void Exit()
-    {
+        public void Exit()
+        {
 
+        }
     }
 }

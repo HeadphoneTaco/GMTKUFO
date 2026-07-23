@@ -1,7 +1,10 @@
-public enum GameState
+namespace _Project.Code.Core
 {
-    MainMenu,   
-    Playing,    
-    Paused,    
-    GameOver   
+    public enum GameState
+    {
+        MainMenu,   
+        Playing,    
+        Paused,    
+        GameOver   
+    }
 }

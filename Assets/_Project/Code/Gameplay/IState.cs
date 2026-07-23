@@ -1,8 +1,9 @@
-using UnityEngine;
-
-public interface IState
+namespace _Project.Code.Gameplay
 {
-    public void Enter();
-    public void Exit();
-    public void Execute();
+    public interface IState
+    {
+        public void Enter();
+        public void Exit();
+        public void Execute();
+    }
 }

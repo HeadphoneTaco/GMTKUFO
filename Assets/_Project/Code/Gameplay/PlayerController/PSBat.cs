@@ -1,27 +1,28 @@
-using UnityEngine;
-
-public class PSBat : IState
+namespace _Project.Code.Gameplay.PlayerController
 {
-    private PlayerController _player;
+    public class PSBat : IState
+    {
+        private PlayerController _player;
     
-    public PSBat(PlayerController player)
-    {
-        _player = player;
-    }
-    // the player is a bat and can fly in 8 directions
-    // drain the bat meter, if it is empty: change back into mist
-    public void Enter()
-    {
+        public PSBat(PlayerController player)
+        {
+            _player = player;
+        }
+        // the player is a bat and can fly in 8 directions
+        // drain the bat meter, if it is empty: change back into mist
+        public void Enter()
+        {
         
-    }
+        }
 
-    public void Execute()
-    {
+        public void Execute()
+        {
 
-    }
+        }
 
-    public void Exit()
-    {
+        public void Exit()
+        {
 
+        }
     }
 }
