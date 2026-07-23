@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ca18cfce051e77a4dab60b41a10bcd8a
+guid: c76305646145275489306c735bf44ac4
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - OpenDyslexic
+  - Lato
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

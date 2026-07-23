@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ca18cfce051e77a4dab60b41a10bcd8a
+guid: 09c8de286f0addc42b38890ed6087a1a
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - OpenDyslexic
+  - Jolly Lodger
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
