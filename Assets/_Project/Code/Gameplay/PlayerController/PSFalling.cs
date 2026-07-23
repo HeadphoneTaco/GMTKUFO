@@ -14,10 +14,12 @@ public class PSFalling : IState
     public void Enter()
     {
         EventManager.DIEvent += ChangeDI;
+        Debug.Log("State Entered: falling");
     }
 
     public void Execute()
     {
+        _player.RB.linearVelocityX += _player.FlySpeed * Time.deltaTime * _player.DirectionalInput.x;
         if (_player.IsGrounded())
         {
             if (_player.DirectionalInput.x == 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);

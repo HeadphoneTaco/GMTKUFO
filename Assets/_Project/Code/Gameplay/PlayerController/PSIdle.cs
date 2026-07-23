@@ -14,11 +14,13 @@ public class PSIdle : IState
     {
         //enter animation state
         EventManager.DIEvent += ChangeDI;
+        Debug.Log("State Entered: Idle");
     }
 
     public void Execute()
     {
-
+        _player.RB.linearVelocityX = 0;
+        _player.IncreaseBatTime();
     }
 
     public void Exit()

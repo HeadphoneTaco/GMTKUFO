@@ -18,7 +18,7 @@ public class PSEating : IState
 
     public void Execute()
     {
-
+        _player.IncreaseBatTime();
     }
 
     public void Exit()

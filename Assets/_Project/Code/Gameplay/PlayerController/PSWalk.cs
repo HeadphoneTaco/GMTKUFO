@@ -14,12 +14,14 @@ public class PSWalk : IState
     {
         // play walk animation
         EventManager.DIEvent += ChangeDI;
+        Debug.Log("State Entered: Walk");
     }
 
     public void Execute()
     {
         if(!_player.IsGrounded()) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateFalling);
-        _player.RB.linearVelocityX = _player.WalkSpeed * _player.DirectionalInput.x;
+        _player.RB.linearVelocityX = _player.WalkSpeed * _player.DirectionalInput.x; 
+        _player.IncreaseBatTime();
     }
 
     public void Exit()

@@ -24,15 +24,17 @@ public class PSMist : IState
         _player.CanTransform = false;
         EventManager.DIEvent += ChangeDI;
         _mystStep = 0;
-        _player.RB.linearVelocity = _player.DirectionalInput;
+        _dashDirection = _player.DirectionalInput;
+        Debug.Log("State Entered: Mist");
     }
 
     public void Execute()
     {
         _mystStep += Time.deltaTime;
+        _player.RB.linearVelocity = _dashDirection * _player.MistSpeed;
         if (_mystStep > _player.MistTime)
         {
-            if (_player.BatInputHeld)
+            if (_player.BatInputHeld && Time.time - _player.LastBatBreakTime > _player.TimeAfterBreakToTransform)
             {
                 _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateBat);
             }

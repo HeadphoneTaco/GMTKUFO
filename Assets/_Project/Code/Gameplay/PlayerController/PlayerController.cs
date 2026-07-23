@@ -13,9 +13,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public float FlySpeed;
     [SerializeField] public float MistSpeed;
     [SerializeField] public float MistTime;
-    [SerializeField] public float MaxBatTime;
+    [SerializeField] private float _maxBatTime;
+    [SerializeField] private float _batTimeDrainRate;
+    [SerializeField] private float _batTimeFillRate;
+    private float _currentBatTime;
+    [HideInInspector] public float LastBatBreakTime;
+    [SerializeField] public float TimeAfterBreakToTransform;
     [SerializeField] public float TimeBetweenMist;
     private float _lastTransformationTime;
+    [SerializeField] public float DefaultGravity;
 
 
     [Header("GroundCheck")]
@@ -40,6 +46,8 @@ public class PlayerController : MonoBehaviour
     {
         MyStateMachine.Initialize(MyStateMachine.StateIdle);
         EventManager.TransformationChanged += ChangeBatInput;
+        _currentBatTime = _maxBatTime;
+        LastBatBreakTime = Time.time;
     }
     private void OnDisable()
     {
@@ -63,9 +71,30 @@ public class PlayerController : MonoBehaviour
     public void ChangeBatInput(bool batInputHeld)
     {
         BatInputHeld = batInputHeld;
-        if (CanTransform && _lastTransformationTime - Time.time < TimeBetweenMist)
+        if (CanTransform && Time.time - _lastTransformationTime > TimeBetweenMist && Time.time - LastBatBreakTime > TimeAfterBreakToTransform)
         {
             MyStateMachine.ChangeState(MyStateMachine.StateMist);
+        }
+    }
+    public bool ReduceBatTime()
+    {
+        _currentBatTime = Mathf.Clamp(_currentBatTime - _batTimeDrainRate * Time.deltaTime, 0, _maxBatTime);
+        if (_currentBatTime == 0)
+        {
+            LastBatBreakTime = Time.time;
+            return true;
+        }
+        return false;
+    }
+    public void IncreaseBatTime()
+    {
+        if (_currentBatTime >= _maxBatTime)
+        {
+            _currentBatTime = _maxBatTime;
+        }
+        else
+        {
+            _currentBatTime = Mathf.Clamp( _currentBatTime + _batTimeFillRate * Time.deltaTime, 0, _maxBatTime );
         }
     }
 }
