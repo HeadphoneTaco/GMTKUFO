@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ca18cfce051e77a4dab60b41a10bcd8a
+guid: 61cb383506b4ef847a725dc175cd0909
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - OpenDyslexic
+  - Shlop
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
