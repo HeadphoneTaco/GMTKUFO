@@ -3,6 +3,8 @@ using UnityEngine;
 public class PSMist : IState
 {
     private PlayerController _player;
+    private float _mystStep;
+    private Vector2 _dashDirection;
     
     public PSMist(PlayerController player)
     {
@@ -17,16 +19,41 @@ public class PSMist : IState
     // there may need to be a timer to prevent the player from spamming this ability
     public void Enter()
     {
-        
+        // make particles
+        // change player into myst form
+        _player.CanTransform = false;
+        EventManager.DIEvent += ChangeDI;
+        _mystStep = 0;
+        _player.RB.linearVelocity = _player.DirectionalInput;
     }
 
     public void Execute()
     {
-
+        _mystStep += Time.deltaTime;
+        if (_mystStep > _player.MistTime)
+        {
+            if (_player.BatInputHeld)
+            {
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateBat);
+            }
+            else
+            {
+                // turn player into vamp form
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateFalling);
+            }
+        }
     }
 
     public void Exit()
     {
-
+        EventManager.DIEvent += ChangeDI;
+        if (_player != null)
+        {
+            _player.CanTransform = true;
+        }
+    }
+    public void ChangeDI(Vector2 direction)
+    {
+        _player.ChangeDI(direction);
     }
 }

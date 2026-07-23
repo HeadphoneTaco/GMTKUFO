@@ -9,10 +9,11 @@ public class PSIdle : IState
         _player = player;
     }
     // play idle animation
-    // listen for inputs to go into walking but maybe not mist 
+    // listen for inputs to go into walking and the non moving mist
     public void Enter()
     {
-        
+        //enter animation state
+        EventManager.DIEvent += ChangeDI;
     }
 
     public void Execute()
@@ -22,6 +23,12 @@ public class PSIdle : IState
 
     public void Exit()
     {
-
+        // leave animation state
+        EventManager.DIEvent -= ChangeDI;
+    }
+    public void ChangeDI(Vector2 direction)
+    {
+        _player.ChangeDI(direction);
+        if (direction.x != 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateWalk);
     }
 }

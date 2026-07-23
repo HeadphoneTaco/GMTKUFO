@@ -13,16 +13,25 @@ public class PSFalling : IState
     // if the player hits a victim, suck their blood
     public void Enter()
     {
-        
+        EventManager.DIEvent += ChangeDI;
     }
 
     public void Execute()
     {
-
+        if (_player.IsGrounded())
+        {
+            if (_player.DirectionalInput.x == 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);
+            else _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateWalk);
+        }
     }
 
     public void Exit()
     {
-
+        EventManager.DIEvent -= ChangeDI;
     }
+    public void ChangeDI(Vector2 direction)
+    {
+        _player.ChangeDI(direction);
+    }
+
 }

@@ -13,7 +13,7 @@ public class PSEating : IState
     // 
     public void Enter()
     {
-        
+        _player.CanTransform = false;
     }
 
     public void Execute()
@@ -23,6 +23,9 @@ public class PSEating : IState
 
     public void Exit()
     {
-
+        if (_player != null)
+        {
+            _player.CanTransform = true;
+        }
     }
 }
