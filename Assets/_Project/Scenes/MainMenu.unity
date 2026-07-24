@@ -438,29 +438,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7784251295778291353, guid: ad1827e15370f73429a9fb158739d4d7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1177979555}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad1827e15370f73429a9fb158739d4d7, type: 3}
---- !u!1 &1177979554 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7784251295778291353, guid: ad1827e15370f73429a9fb158739d4d7, type: 3}
-  m_PrefabInstance: {fileID: 1177979553}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1177979555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1177979554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c08c58ae40de63346a10c6877122b0c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_Project.Code.UI.MainMenuController
-  _optionsSceneName: Options
 --- !u!1 &1562166206
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,7 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c08c58ae40de63346a10c6877122b0c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
-  _optionsSceneName: Options
+  _settingsSceneName: Settings
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
