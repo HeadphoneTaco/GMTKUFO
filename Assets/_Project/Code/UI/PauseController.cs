@@ -3,23 +3,12 @@ using UnityEngine;
 
 namespace _Project.Code.UI
 {
-    /// <summary>
-    /// Pause overlay, lives in the Game scene. The pause menu is a panel (not a scene) so the run
-    /// stays loaded underneath. Shows/hides itself off the GameManager's state, so it stays in sync
-    /// no matter what triggers the pause.
-    ///
-    /// Hookup:
-    ///   - Bind your pause input action (or a button) to TogglePause().
-    ///   - Resume button -> Resume(); Main Menu button -> ReturnToMenu().
-    ///   - Assign the pause panel GameObject below.
-    /// (Options from pause is left out for now since Options is a separate scene; add it as an
-    ///  overlay panel later if the run should survive opening options.)
-    /// </summary>
+
     public class PauseController : MonoBehaviour
     {
         [Tooltip("The pause menu panel to show while paused.")]
         [SerializeField] private GameObject _pausePanel;
-        [Tooltip("Optional options sub-panel, opened from the pause menu. Kept in-scene so the run stays paused underneath.")]
+        [Tooltip("Optional Settings sub-panel, opened from the pause menu. Kept in-scene so the run stays paused underneath.")]
         [SerializeField] private GameObject _optionsPanel;
 
         private void Awake()

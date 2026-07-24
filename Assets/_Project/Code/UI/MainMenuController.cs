@@ -9,12 +9,12 @@ namespace _Project.Code.UI
     ///
     /// Place the GameManager in THIS scene (it is DontDestroyOnLoad, so it rides along into the
     /// Game and EndScreen scenes). Play starts a run via the GameManager, which loads the Game scene.
-    /// Options is a menu-side scene, so it is loaded here directly rather than through the run flow.
+    /// Settings is a menu-side scene, so it is loaded here directly rather than through the run flow.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
-        [Tooltip("Options scene to load from the menu. Must be in Build Settings.")]
-        [SerializeField] private string _optionsSceneName = "Options";
+        [Tooltip("Settings scene to load from the menu. Must be in Build Settings.")]
+        [SerializeField] private string _settingsSceneName = "Settings";
 
         /// <summary>Play button: reset and start a run (GameManager loads the Game scene).</summary>
         public void PlayGame()
@@ -22,11 +22,12 @@ namespace _Project.Code.UI
             GameManager.Instance.StartRun();
         }
 
-        /// <summary>Options button: open the (placeholder) options scene.</summary>
+        /// <summary>Settings button: open the settings scene. (Method name kept as OpenOptions so the
+        /// existing button OnClick binding still resolves; rename it and rewire the button to match.)</summary>
         public void OpenOptions()
         {
-            if (!string.IsNullOrEmpty(_optionsSceneName))
-                SceneManager.LoadScene(_optionsSceneName);
+            if (!string.IsNullOrEmpty(_settingsSceneName))
+                SceneManager.LoadScene(_settingsSceneName);
         }
 
         /// <summary>Quit button: exit the game (stops play mode in the editor).</summary>
