@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace _Project.Code.UI
-{
+
     /// <summary>
     /// Placeholder options scene. For now it is just a Back button that returns to the menu.
     /// Fill in volume/fullscreen/etc. later; keep the Back wiring when you do.
@@ -19,4 +18,3 @@ namespace _Project.Code.UI
                 SceneManager.LoadScene(_returnSceneName);
         }
     }
-}

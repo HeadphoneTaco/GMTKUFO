@@ -3,8 +3,6 @@ using CoreUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace _Project.Code.Core
-{
     /// <summary>
     /// Central run manager for "Count Down Under". Owns the game-flow state, the score
     /// (blood gathered), the sunrise countdown, and the post-sunrise daylight drain.
@@ -237,4 +235,3 @@ namespace _Project.Code.Core
             OnGameStateChanged?.Invoke(next);
         }
     }
-}

@@ -1,9 +1,8 @@
-using _Project.Code.Core;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace _Project.Code.UI
-{
+
     /// <summary>
     /// Title scene controller. Wire these methods to the menu buttons' OnClick in the inspector.
     ///
@@ -39,4 +38,4 @@ namespace _Project.Code.UI
 #endif
         }
     }
-}
+

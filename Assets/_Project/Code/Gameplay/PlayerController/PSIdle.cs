@@ -1,5 +1,3 @@
-namespace _Project.Code.Gameplay.PlayerController
-{
     public class PSIdle : IState
     {
         private PlayerController _player;
@@ -25,4 +23,3 @@ namespace _Project.Code.Gameplay.PlayerController
 
         }
     }
-}

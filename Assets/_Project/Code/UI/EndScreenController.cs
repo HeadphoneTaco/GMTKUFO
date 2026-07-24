@@ -1,9 +1,7 @@
-using _Project.Code.Core;
 using TMPro;
 using UnityEngine;
 
-namespace _Project.Code.UI
-{
+
     /// <summary>
     /// Results scene. Reads the score the GameManager banked in EndRun() (LastBankedScore stays
     /// stable after the Game scene unloads, since the GameManager persists across scenes).
@@ -39,4 +37,3 @@ namespace _Project.Code.UI
             GameManager.Instance.ReturnToMenu();
         }
     }
-}

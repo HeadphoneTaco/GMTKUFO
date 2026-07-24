@@ -1,5 +1,3 @@
-namespace _Project.Code.Gameplay.PlayerController
-{
     public class PSMist : IState
     {
         private PlayerController _player;
@@ -30,4 +28,3 @@ namespace _Project.Code.Gameplay.PlayerController
 
         }
     }
-}

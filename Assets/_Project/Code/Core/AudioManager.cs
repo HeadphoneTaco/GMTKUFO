@@ -1,7 +1,5 @@
 using UnityEngine;
 
-namespace _Project.Code.Core
-{
     public class AudioManager : MonoBehaviour
     {
         public static AudioManager Instance;
@@ -28,4 +26,3 @@ namespace _Project.Code.Core
             bgAudioSource.Play();
         }
     }
-}

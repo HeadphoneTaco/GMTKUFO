@@ -1,5 +1,4 @@
-namespace _Project.Code.Core
-{
+
     public enum GameState
     {
         MainMenu,   
@@ -7,4 +6,3 @@ namespace _Project.Code.Core
         Paused,    
         GameOver   
     }
-}

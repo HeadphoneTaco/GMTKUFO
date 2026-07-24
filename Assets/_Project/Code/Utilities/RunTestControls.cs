@@ -1,8 +1,7 @@
-using _Project.Code.Core;
+
 using UnityEngine;
 
-namespace _Project.Code.Utilities
-{
+
     /// <summary>
     /// TEMPORARY test scaffolding. Lets a UI button drive the run flow before the player and Coffin
     /// exist, so the scene flow can be tested end to end. Wire a button's OnClick to SleepNow() to
@@ -22,4 +21,3 @@ namespace _Project.Code.Utilities
             if (GameManager.Exists) GameManager.Instance.AddBlood(25f);
         }
     }
-}

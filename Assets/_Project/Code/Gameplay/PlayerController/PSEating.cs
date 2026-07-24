@@ -1,5 +1,3 @@
-namespace _Project.Code.Gameplay.PlayerController
-{
     public class PSEating : IState
     {
         private PlayerController _player;
@@ -26,4 +24,4 @@ namespace _Project.Code.Gameplay.PlayerController
 
         }
     }
-}
+

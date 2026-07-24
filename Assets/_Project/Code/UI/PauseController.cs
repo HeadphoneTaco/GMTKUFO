@@ -1,8 +1,7 @@
-using _Project.Code.Core;
+
 using UnityEngine;
 
-namespace _Project.Code.UI
-{
+
     /// <summary>
     /// Pause overlay, lives in the Game scene. The pause menu is a panel (not a scene) so the run
     /// stays loaded underneath. Shows/hides itself off the GameManager's state, so it stays in sync
@@ -78,4 +77,3 @@ namespace _Project.Code.UI
             if (GameManager.Exists) GameManager.Instance.ReturnToMenu();
         }
     }
-}
