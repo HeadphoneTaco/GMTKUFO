@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace _Project.Code.Gameplay.PlayerController
+{
 public class PSIdle : IState
 {
     private PlayerController _player;
@@ -19,7 +21,9 @@ public class PSIdle : IState
 
     public void Execute()
     {
-        _player.RB.linearVelocityX = 0;
+        Vector3 v = _player.RB.linearVelocity;
+        v.x = 0;
+        _player.RB.linearVelocity = v;
         _player.IncreaseBatTime();
     }
 
@@ -33,4 +37,5 @@ public class PSIdle : IState
         _player.ChangeDI(direction);
         if (direction.x != 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateWalk);
     }
+}
 }

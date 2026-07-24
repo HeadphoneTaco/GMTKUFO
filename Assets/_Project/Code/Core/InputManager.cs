@@ -26,7 +26,7 @@ public class InputManager : MonoBehaviour
             OnMove(_currentDI);
             _lastReadDI = _currentDI;
         }
-        if (_inputs.Player.Transform.WasReleasedThisFrame()) { EventManager.TransformationChanged(false); Debug.Log("Releaced"); }
+        if (_inputs.Player.Transform.WasReleasedThisFrame()) { EventManager.TransformationChanged(false); Debug.Log("Released"); }
         if (_inputs.Player.Transform.WasPressedThisFrame()) { EventManager.TransformationChanged(true); Debug.Log("Pressed"); }
     }
     public void OnMove(Vector2 di)

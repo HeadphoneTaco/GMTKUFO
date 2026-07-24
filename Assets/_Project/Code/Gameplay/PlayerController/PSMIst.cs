@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace _Project.Code.Gameplay.PlayerController
+{
 public class PSMist : IState
 {
     private PlayerController _player;
@@ -58,4 +60,5 @@ public class PSMist : IState
     {
         _player.ChangeDI(direction);
     }
+}
 }

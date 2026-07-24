@@ -2,34 +2,38 @@ using UnityEngine;
 
 namespace _Project.Code.Gameplay
 {
-    public class PlayerAnimator : MonoBehaviour
+    // Thin animation driver. PlayerController owns one of these (like its state machine)
+    // and the player states call these methods at the right moments. Not a MonoBehaviour:
+    // it just wraps an Animator and turns game state into animator parameters.
+    public class PlayerAnimator
     {
-        [SerializeField] private PlayerController.PlayerController playerController;
-        [SerializeField] private Animator anim;
+        private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
+        private static readonly int Velocity = Animator.StringToHash("Velocity");
+        private static readonly int Jump = Animator.StringToHash("Jump");
 
-        private Vector3 _playerVelocity;
+        private readonly Animator _anim;
 
-        private void Update()
+        public PlayerAnimator(Animator anim)
         {
-            anim.SetBool("IsGrounded", playerController.IsGrounded());
-            _playerVelocity += playerController.GetPlayerVelocity();
-            _playerVelocity.y = 0;
-            anim.SetFloat("Velocity", playerController.GetPlayerVelocity().sqrMagnitude);
+            _anim = anim;
         }
 
-        private void OnEnable()
+        public void SetGrounded(bool grounded)
         {
-            playerController.OnJumpEvent += OnJump;
+            if (_anim == null) return;
+            _anim.SetBool(IsGrounded, grounded);
         }
 
-        private void OnDisable()
+        public void SetSpeed(float speed)
         {
-            playerController.OnJumpEvent -= OnJump;
+            if (_anim == null) return;
+            _anim.SetFloat(Velocity, speed);
         }
 
-        private void OnJump()
+        public void PlayJump()
         {
-            anim.SetTrigger("Jump");
+            if (_anim == null) return;
+            _anim.SetTrigger(Jump);
         }
     }
 }

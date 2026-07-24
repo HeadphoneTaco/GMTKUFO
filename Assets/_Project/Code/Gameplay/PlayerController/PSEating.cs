@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace _Project.Code.Gameplay.PlayerController
+{
 public class PSEating : IState
 {
     private PlayerController _player;
@@ -28,4 +30,5 @@ public class PSEating : IState
             _player.CanTransform = true;
         }
     }
+}
 }

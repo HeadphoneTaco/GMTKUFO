@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace _Project.Code.Gameplay.PlayerController
+{
 public class PSFalling : IState
 {
     private PlayerController _player;
@@ -19,7 +21,9 @@ public class PSFalling : IState
 
     public void Execute()
     {
-        _player.RB.linearVelocityX += _player.FlySpeed * Time.deltaTime * _player.DirectionalInput.x;
+        Vector3 v = _player.RB.linearVelocity;
+        v.x += _player.FlySpeed * Time.deltaTime * _player.DirectionalInput.x;
+        _player.RB.linearVelocity = v;
         if (_player.IsGrounded())
         {
             if (_player.DirectionalInput.x == 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);
@@ -36,4 +40,5 @@ public class PSFalling : IState
         _player.ChangeDI(direction);
     }
 
+}
 }
