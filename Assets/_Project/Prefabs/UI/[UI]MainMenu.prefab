@@ -338,7 +338,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2400634143268698718, guid: 5c23d1f0931470448a600851ec1800a9, type: 3}
       propertyPath: m_Name
-      value: OptionsButton
+      value: SettingsButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 3763398824812050482, guid: 5c23d1f0931470448a600851ec1800a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7784251295778291353}
+    - target: {fileID: 3763398824812050482, guid: 5c23d1f0931470448a600851ec1800a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6233079615148832084, guid: 5c23d1f0931470448a600851ec1800a9, type: 3}
       propertyPath: m_Pivot.x
