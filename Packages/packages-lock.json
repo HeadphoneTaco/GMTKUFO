@@ -210,6 +210,12 @@
       },
       "hash": "c5e0dda7bb92a325d8a43e82384d88090af6ae63"
     },
+    "xyz.staggartcreations.skyboxes": {
+      "version": "file:xyz.staggartcreations.skyboxes",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
