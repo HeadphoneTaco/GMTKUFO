@@ -1,65 +1,100 @@
-using System;
 using UnityEngine;
 
-namespace _Project.Code.Gameplay.PlayerController
+public class PlayerController : MonoBehaviour
 {
-    public class PlayerController : MonoBehaviour
+    public PlayerStateMachine MyStateMachine;
+    [HideInInspector] public Vector2 DirectionalInput = Vector2.zero;
+    [HideInInspector] public bool BatInputHeld;
+    [HideInInspector] public Rigidbody2D RB;
+    [HideInInspector] public bool CanTransform = true;
+
+    [Header("Player Stats")]
+    [SerializeField] public float WalkSpeed;
+    [SerializeField] public float FlySpeed;
+    [SerializeField] public float MistSpeed;
+    [SerializeField] public float MistTime;
+    [SerializeField] private float _maxBatTime;
+    [SerializeField] private float _batTimeDrainRate;
+    [SerializeField] private float _batTimeFillRate;
+    private float _currentBatTime;
+    [HideInInspector] public float LastBatBreakTime;
+    [SerializeField] public float TimeAfterBreakToTransform;
+    [SerializeField] public float TimeBetweenMist;
+    private float _lastTransformationTime;
+    [SerializeField] public float DefaultGravity;
+
+
+    [Header("GroundCheck")]
+    [SerializeField] private float _groundCheckOffset;
+    [SerializeField] private float _groundCheckDistance;
+    [SerializeField] private string _groundLayerName;
+    private int _groundLayerIndex;
+
+    [Header("EatStats")]
+    [SerializeField] private Vector2 BoxCastHalf;
+
+    
+    
+
+    private void Awake()
     {
-        public PlayerStateMachine MyStateMachine;
-        [HideInInspector] public Vector2 DirectionalInput;
-        [HideInInspector] public bool BatInputHeld;
+        MyStateMachine = new PlayerStateMachine(this);
+        _groundLayerIndex = LayerMask.GetMask(_groundLayerName);
+        RB = GetComponent<Rigidbody2D>();
+    }
+    private void OnEnable()
+    {
+        MyStateMachine.Initialize(MyStateMachine.StateIdle);
+        EventManager.TransformationChanged += ChangeBatInput;
+        _currentBatTime = _maxBatTime;
+        LastBatBreakTime = Time.time;
+    }
+    private void OnDisable()
+    {
+        MyStateMachine.Disable();
+        EventManager.TransformationChanged -= ChangeBatInput;
+    }
 
-        // Raised when the player jumps. States that trigger a jump should call InvokeJump().
-        public event Action OnJumpEvent;
+    public void Update()
+    {
+        MyStateMachine.Execute();
+    }
 
-        [Header("Physics")]
-        [SerializeField] private Rigidbody _rb;
-
-        [Header("GroundCheck")]
-        [SerializeField] private float _groundCheckOffset;
-        [SerializeField] private float _groundCheckDistance;
-        [SerializeField] private string _groundLayerName;
-        private int _groundLayerMask;
-
-
-
-        private void Awake()
+    public bool IsGrounded()
+    {
+        return Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y) + _groundCheckOffset * Vector2.down, Vector2.down, _groundCheckDistance, _groundLayerIndex);
+    }
+    public void ChangeDI(Vector2 directionalInput)
+    {
+        DirectionalInput = directionalInput;
+    }
+    public void ChangeBatInput(bool batInputHeld)
+    {
+        BatInputHeld = batInputHeld;
+        if (CanTransform && Time.time - _lastTransformationTime > TimeBetweenMist && Time.time - LastBatBreakTime > TimeAfterBreakToTransform)
         {
-            MyStateMachine = new PlayerStateMachine(this);
-            _groundLayerMask = LayerMask.GetMask(_groundLayerName);
-            if (_rb == null)
-            {
-                _rb = GetComponent<Rigidbody>();
-            }
+            MyStateMachine.ChangeState(MyStateMachine.StateMist);
         }
-        private void OnEnable()
+    }
+    public bool ReduceBatTime()
+    {
+        _currentBatTime = Mathf.Clamp(_currentBatTime - _batTimeDrainRate * Time.deltaTime, 0, _maxBatTime);
+        if (_currentBatTime == 0)
         {
-            MyStateMachine.Initialize(MyStateMachine.StateIdle);
+            LastBatBreakTime = Time.time;
+            return true;
         }
-        private void OnDisable()
+        return false;
+    }
+    public void IncreaseBatTime()
+    {
+        if (_currentBatTime >= _maxBatTime)
         {
-            MyStateMachine.Disable();
+            _currentBatTime = _maxBatTime;
         }
-
-        public void Update()
+        else
         {
-            MyStateMachine.Execute();
-        }
-
-        public bool IsGrounded()
-        {
-            return Physics.Raycast(transform.position + _groundCheckOffset * Vector3.down, Vector3.down, _groundCheckDistance, _groundLayerMask);
-        }
-
-        public Vector3 GetPlayerVelocity()
-        {
-            return _rb != null ? _rb.linearVelocity : Vector3.zero;
-        }
-
-        // Call from a state when the player jumps so listeners like PlayerAnimator can react.
-        public void InvokeJump()
-        {
-            OnJumpEvent?.Invoke();
+            _currentBatTime = Mathf.Clamp( _currentBatTime + _batTimeFillRate * Time.deltaTime, 0, _maxBatTime );
         }
     }
 }
