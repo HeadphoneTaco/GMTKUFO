@@ -1,29 +1,34 @@
+using UnityEngine;
+
 namespace _Project.Code.Gameplay.PlayerController
 {
-    public class PSEating : IState
-    {
-        private PlayerController _player;
+public class PSEating : IState
+{
+    private PlayerController _player;
     
-        public PSEating(PlayerController player)
-        {
-            _player = player;
-        }
-        // play the eating animation
-        // exit into Idle
-        // 
-        public void Enter()
-        {
-        
-        }
+    public PSEating(PlayerController player)
+    {
+        _player = player;
+    }
+    // play the eating animation
+    // exit into Idle
+    // 
+    public void Enter()
+    {
+        _player.CanTransform = false;
+    }
 
-        public void Execute()
+    public void Execute()
+    {
+        _player.IncreaseBatTime();
+    }
+
+    public void Exit()
+    {
+        if (_player != null)
         {
-
-        }
-
-        public void Exit()
-        {
-
+            _player.CanTransform = true;
         }
     }
+}
 }
