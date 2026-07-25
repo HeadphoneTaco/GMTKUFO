@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Obstacle
   _damage: 3
-  _pushStrength: 10
-  _yMultiplier: 2
+  _pushStrength: 40
+  _yMultiplier: 1
 --- !u!135 &266694886
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -169,7 +169,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -241,7 +241,7 @@ Transform:
   m_GameObject: {fileID: 266694884}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -149.1, y: 1.07, z: 0}
+  m_LocalPosition: {x: -149.1, y: 0.71, z: 11.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
