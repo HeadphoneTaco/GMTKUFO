@@ -23,6 +23,14 @@ namespace _Project.Code.Gameplay.PlayerController
 
         public void Execute()
         {
+            // Automatic bite, checked before the ground test so walking into someone grabs them
+            // rather than being overridden by a fall on the same frame.
+            if (_player.CheckForVictims())
+            {
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateEating);
+                return;
+            }
+
             if (!_player.IsGrounded()) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateFalling);
             Vector3 v = _player.RB.linearVelocity;
             v.x = _player.WalkSpeed * _player.DirectionalInput.x;

@@ -142,11 +142,17 @@ MonoBehaviour:
   TimeAfterBreakToTransform: 3
   TimeBetweenMist: 1
   DefaultGravity: 1
+  MaxHealth: 0
+  _healSpeed: 0
+  _invincibilityTime: 0
   _jumpForce: 8
   _groundCheckOffset: 0.9
   _groundCheckDistance: 0.3
   _groundLayerName: Ground
-  BoxCastHalf: {x: 0, y: 0}
+  _boxCastHalf: {x: 1, y: 1, z: 1}
+  _victimLayerName: Victims
+  EatCastHit: {fileID: 0}
+  BloodDrainSpeed: 50
   _humanoidModel: {fileID: 6913441720247539484}
   _humanoidAnimator: {fileID: 6283100875467503970}
   _batModel: {fileID: 5765556020016532856}

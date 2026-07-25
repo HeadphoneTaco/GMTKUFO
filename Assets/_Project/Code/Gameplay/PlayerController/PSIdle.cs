@@ -22,6 +22,14 @@ public class PSIdle : IState
 
     public void Execute()
     {
+        // Automatic bite: anyone who wanders into reach gets drained, no input needed. Matches
+        // how Falling and Mist already behave.
+        if (_player.CheckForVictims())
+        {
+            _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateEating);
+            return;
+        }
+
         Vector3 v = _player.RB.linearVelocity;
         v.x = 0;
         _player.RB.linearVelocity = v;

@@ -31,17 +31,39 @@ public class PSEating : IState
                 _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);
         else
             {
-                // go into eating animation
+                _player.MyAnimator.PlayAttack();
                 _player.RB.linearVelocity = Vector3.zero;
-                _player.transform.position = new Vector3(_victim.transform.position.x, _victim.transform.position.y, _player.transform.position.z);
+                // No repositioning on enter. The overlap check has already confirmed the victim
+                // is in reach, and snapping onto the victim's exact x put the two colliders in
+                // the same place, which physics resolved by shoving the player back out again.
             }
     }
 
     public void Execute()
     {
+            // Never sit in this state without something to drain. Returning instead of leaving
+            // would strand the player here with the attack animation looping.
+            if (_victim == null)
+            {
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);
+                return;
+            }
+
+            // Hold still for the whole drain. Horizontal only, so a bite that started mid air
+            // still falls to the ground instead of hanging there. Input is already ignored,
+            // because this state's ChangeDI deliberately does nothing.
+            Vector3 v = _player.RB.linearVelocity;
+            v.x = 0;
+            _player.RB.linearVelocity = v;
+
         _player.IncreaseBatTime();
             (_drainFinished,_drainAmount) = _victim.DrainBlood(_player.BloodDrainSpeed * Time.deltaTime);
+
+            // Instance lazily creates the manager when the scene is entered directly, so this is
+            // safe without an Exists guard. Guarding it would skip scoring entirely in that case,
+            // because Exists stays false until something touches Instance.
             GameManager.Instance.AddBlood(_drainAmount);
+
             if (_drainFinished) { _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle); }
     }
 
