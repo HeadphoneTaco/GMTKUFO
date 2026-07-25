@@ -51,6 +51,19 @@ namespace _Project.Code.Gameplay.PlayerController
 
 
         [Header("GroundCheck")]
+        [Tooltip("On: offset and distance are computed from the capsule at Awake and the two values " +
+                 "below are ignored. Off: the values below are used as typed.")]
+        [SerializeField] private bool _autoSizeGroundCheck = true;
+
+        [Tooltip("How far above the capsule's bottom the ray starts. It must start INSIDE the " +
+                 "capsule. A ray starting at or below the feet begins under the floor and cannot " +
+                 "detect it.")]
+        [SerializeField] private float _groundRayInset = 0.15f;
+
+        [Tooltip("How far past the capsule's bottom the ray reaches. This is the real tolerance " +
+                 "for slopes, bumps and settling.")]
+        [SerializeField] private float _groundRayReach = 0.15f;
+
         [SerializeField] private float _groundCheckOffset;
         [SerializeField] private float _groundCheckDistance;
         [SerializeField] private string _groundLayerName;
@@ -98,6 +111,44 @@ namespace _Project.Code.Gameplay.PlayerController
             RB = GetComponent<Rigidbody>();
             // Side-scroller: keep the body on the XY plane and stop it tipping over
             RB.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            ConfigureGroundCheck();
+        }
+
+        /// <summary>
+        /// Derives the ground ray from the capsule instead of trusting hand-typed numbers.
+        ///
+        /// Those numbers have to track the collider, and nothing enforces it. Resizing the capsule
+        /// silently breaks IsGrounded, which surfaces much later as the player being stuck in the
+        /// falling animation, so the symptom points nowhere near the cause. That has cost time
+        /// three separate times on this project.
+        ///
+        /// Two failure modes, and the safe window between them is narrow:
+        ///   offset too small  -> the ray stops inside the capsule, above the floor, never hits
+        ///   offset too large  -> the ray starts below the feet, under the floor, never hits
+        /// </summary>
+        private void ConfigureGroundCheck()
+        {
+            if (!_autoSizeGroundCheck) return;
+
+            var capsule = GetComponent<CapsuleCollider>();
+            if (capsule == null)
+            {
+                Debug.LogWarning("[PlayerController] Auto ground check needs a CapsuleCollider on " +
+                                 "this object. Falling back to the values in the Inspector.", this);
+                return;
+            }
+
+            // Distance from the transform origin down to the bottom of the capsule, in world units.
+            float scaleY = Mathf.Abs(transform.lossyScale.y);
+            float bottom = -(capsule.center.y - capsule.height * 0.5f) * scaleY;
+
+            _groundCheckOffset = bottom - _groundRayInset;
+            _groundCheckDistance = _groundRayInset + _groundRayReach;
+
+            if (_groundCheckOffset <= 0f)
+                Debug.LogWarning($"[PlayerController] Capsule bottom is only {bottom:F3} below the " +
+                                 $"origin, less than the {_groundRayInset} inset, so the ray would " +
+                                 "start above the origin. Lower the inset.", this);
         }
         private void OnEnable()
         {
