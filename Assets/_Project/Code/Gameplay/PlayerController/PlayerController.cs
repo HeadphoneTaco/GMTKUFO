@@ -1,3 +1,5 @@
+using _Project.Code.Core;
+using System.Collections;
 using UnityEngine;
 
 namespace _Project.Code.Gameplay.PlayerController
@@ -25,6 +27,11 @@ namespace _Project.Code.Gameplay.PlayerController
         [SerializeField] public float TimeBetweenMist;
         private float _lastTransformationTime;
         [SerializeField] public float DefaultGravity;
+        [SerializeField] private float MaxHealth;
+        private float _currentHealth;
+        [SerializeField] private float _healSpeed;
+        [SerializeField] private float _invincibilityTime;
+        private bool IsInvincible;
 
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
@@ -69,6 +76,7 @@ namespace _Project.Code.Gameplay.PlayerController
             EventManager.JumpEvent += Jump;
             _currentBatTime = _maxBatTime;
             LastBatBreakTime = Time.time;
+            _currentHealth = MaxHealth;
         }
         private void OnDisable()
         {
@@ -139,6 +147,27 @@ namespace _Project.Code.Gameplay.PlayerController
             if (EatCastHits.Length > 0) { EatCastHit = EatCastHits[0]; return true; }
             else return false;
             //return Physics.BoxCast(transform.position, _boxCastHalf, new Vector3(0,0,1), out EatCastHit, Quaternion.identity, 20f, _victimLayerIndex);
+        }
+        public void TakeDamage(float damage, Vector3 BounceDirection)
+        {
+            RB.linearVelocity += BounceDirection ;
+            if (!IsInvincible) { 
+            if (_currentHealth < damage)
+            {
+                _currentHealth = 0;
+                GameManager.Instance.EndRun();
+            }
+            else
+            {
+                _currentHealth -= damage;
+            }
+            }
+        }
+        public IEnumerator InvincibilityTime()
+        {
+            IsInvincible = true;
+            yield return new WaitForSeconds(_invincibilityTime);
+            IsInvincible = false;
         }
     }
 }

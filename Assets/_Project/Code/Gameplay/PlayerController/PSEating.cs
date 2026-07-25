@@ -20,7 +20,8 @@ public class PSEating : IState
     // 
     public void Enter()
     {
-        _player.CanTransform = false;
+            EventManager.DIEvent += ChangeDI;
+            _player.CanTransform = false;
             _drainAmount = 0;
             _drainFinished = false;
         _victim = _player.EatCastHit.GetComponent<Victim>();
@@ -45,11 +46,16 @@ public class PSEating : IState
 
     public void Exit()
     {
-        if (_player != null)
+            EventManager.DIEvent -= ChangeDI;
+            if (_player != null)
         {
             _player.CanTransform = true;
         }
     }
+        public void ChangeDI(Vector2 di)
+        {
+
+        }
 
         public void FixedUpdate()
         {
