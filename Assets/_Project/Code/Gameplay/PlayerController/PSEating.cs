@@ -33,9 +33,16 @@ public class PSEating : IState
             {
                 _player.MyAnimator.PlayAttack();
                 _player.RB.linearVelocity = Vector3.zero;
-                // No repositioning on enter. The overlap check has already confirmed the victim
-                // is in reach, and snapping onto the victim's exact x put the two colliders in
-                // the same place, which physics resolved by shoving the player back out again.
+
+                // Pull in horizontally to a standoff on whichever side the player approached
+                // from. The bite can trigger from up to _boxCastHalf.x away, so without this the
+                // attack animation plays with a visible gap. Snapping to the victim's exact x
+                // was the previous behaviour and put the colliders inside each other, which
+                // physics resolved by shoving the player straight back out of the bite.
+                Vector3 p = _player.transform.position;
+                float side = Mathf.Sign(p.x - _victim.transform.position.x);
+                p.x = _victim.transform.position.x + side * _player.BiteStandoff;
+                _player.transform.position = p;
             }
     }
 

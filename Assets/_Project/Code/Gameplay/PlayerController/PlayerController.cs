@@ -51,6 +51,11 @@ namespace _Project.Code.Gameplay.PlayerController
         private Collider[] EatCastHits;
         private int _victimLayerIndex;
         [SerializeField] public float BloodDrainSpeed;
+        [Tooltip("How close the player is pulled to the victim when a bite starts. The bite can " +
+                 "trigger from up to _boxCastHalf.x away, which reads as biting thin air. Keep " +
+                 "this above the two collider radii added together, about 0.7 here, or they end " +
+                 "up inside each other and physics shoves the player back out of the bite.")]
+        [SerializeField] public float BiteStandoff = 0.75f;
 
         [Header("Animation")]
         [Tooltip("The humanoid (vampire) model root, shown in humanoid form.")]
