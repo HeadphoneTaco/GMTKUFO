@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 131204862117569304, guid: b14e3d20590f4014e8c623598141da02, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -143.06178
+      value: -142.5734
       objectReference: {fileID: 0}
     - target: {fileID: 131204862117569304, guid: b14e3d20590f4014e8c623598141da02, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.75
+      value: 1.78
       objectReference: {fileID: 0}
     - target: {fileID: 131204862117569304, guid: b14e3d20590f4014e8c623598141da02, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7.485618
+      value: 9.3
       objectReference: {fileID: 0}
     - target: {fileID: 131204862117569304, guid: b14e3d20590f4014e8c623598141da02, type: 3}
       propertyPath: m_LocalRotation.w
@@ -51,6 +51,14 @@ PrefabInstance:
     - target: {fileID: 763908298782161314, guid: b14e3d20590f4014e8c623598141da02, type: 3}
       propertyPath: m_Name
       value: Player_Drac
+      objectReference: {fileID: 0}
+    - target: {fileID: 5486098870415762306, guid: b14e3d20590f4014e8c623598141da02, type: 3}
+      propertyPath: m_Height
+      value: 2.1533
+      objectReference: {fileID: 0}
+    - target: {fileID: 5486098870415762306, guid: b14e3d20590f4014e8c623598141da02, type: 3}
+      propertyPath: m_Center.y
+      value: -0.13664997
       objectReference: {fileID: 0}
     - target: {fileID: 5765556020016532856, guid: b14e3d20590f4014e8c623598141da02, type: 3}
       propertyPath: m_IsActive
