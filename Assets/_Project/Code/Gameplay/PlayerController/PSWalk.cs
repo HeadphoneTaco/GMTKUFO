@@ -32,9 +32,16 @@ namespace _Project.Code.Gameplay.PlayerController
             }
 
             if (!_player.IsGrounded()) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateFalling);
-            Vector3 v = _player.RB.linearVelocity;
-            v.x = _player.WalkSpeed * _player.DirectionalInput.x;
-            _player.RB.linearVelocity = v;
+
+            // Leave horizontal velocity alone briefly after a hit. Assigning x from input every
+            // frame would delete the knockback on the same frame the hazard applied it, which
+            // makes a hazard look like it does nothing but drain health.
+            if (!_player.IsKnockedBack)
+            {
+                Vector3 v = _player.RB.linearVelocity;
+                v.x = _player.WalkSpeed * _player.DirectionalInput.x;
+                _player.RB.linearVelocity = v;
+            }
             _player.IncreaseBatTime();
         }
 

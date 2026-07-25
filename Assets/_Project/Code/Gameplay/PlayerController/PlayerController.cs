@@ -30,8 +30,17 @@ namespace _Project.Code.Gameplay.PlayerController
         [SerializeField] private float MaxHealth;
         private float _currentHealth;
         [SerializeField] private float _healSpeed;
-        [SerializeField] private float _invincibilityTime;
+        [SerializeField] private float _invincibilityTime = 1f;
         private bool IsInvincible;
+
+        [Tooltip("Seconds after a hit during which the movement states stop overwriting horizontal " +
+                 "velocity, so the knockback is actually visible. Walk and Idle both assign x " +
+                 "every frame, which otherwise erases it before it moves the player at all.")]
+        [SerializeField] private float _knockbackTime = 0.25f;
+        private float _knockbackUntil;
+
+        /// <summary>True while a recent hit's knockback should be left alone by the movement states.</summary>
+        public bool IsKnockedBack => Time.time < _knockbackUntil;
 
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
@@ -168,18 +177,30 @@ namespace _Project.Code.Gameplay.PlayerController
         }
         public void TakeDamage(float damage, Vector3 BounceDirection)
         {
-            RB.linearVelocity += BounceDirection ;
-            if (!IsInvincible) { 
-            if (_currentHealth < damage)
+            // Bail before the knockback too. Applying it while invincible let a hazard shove the
+            // player around repeatedly during the very window meant to protect them.
+            if (IsInvincible) return;
+
+            // Replace horizontal velocity rather than adding to it. The player is usually running
+            // into the hazard, so adding would partly cancel the push out.
+            Vector3 v = RB.linearVelocity;
+            v.x = BounceDirection.x;
+            v.y = Mathf.Max(v.y, 0f) + BounceDirection.y;
+            RB.linearVelocity = v;
+
+            _knockbackUntil = Time.time + _knockbackTime;
+
+            // Equal health and damage is death. The old strict less-than left the player alive on
+            // exactly zero health, which then read as an extra free hit.
+            if (_currentHealth <= damage)
             {
                 _currentHealth = 0;
                 GameManager.Instance.EndRun();
+                return;
             }
-            else
-            {
-                _currentHealth -= damage;
-            }
-            }
+
+            _currentHealth -= damage;
+            StartCoroutine(InvincibilityTime());
         }
         public IEnumerator InvincibilityTime()
         {

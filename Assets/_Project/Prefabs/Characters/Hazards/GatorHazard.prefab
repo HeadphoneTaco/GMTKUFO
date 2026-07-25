@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.16
+      value: -137.95
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000014156103
+      value: -0.00001005712
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0
+      value: 10.11
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       propertyPath: m_LocalRotation.w
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       propertyPath: m_Name
-      value: ALLIGATOR_DEMO
+      value: GatorHazarad
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -59,6 +59,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6705437562043497339}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 807675891088395446}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5626695867928634187}
   m_SourcePrefab: {fileID: 100100000, guid: e4160cca72b51064ab60b24c61590262, type: 3}
 --- !u!1 &5892673284265473909 stripped
 GameObject:
@@ -87,3 +93,40 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &807675891088395446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5892673284265473909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52f4e48be48dc3043a50f71a4d4f4681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Obstacle
+  _damage: 25
+  _pushStrength: 6
+  _yMultiplier: 1
+  _minUpward: 0.4
+--- !u!65 &5626695867928634187
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5892673284265473909}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.79127204, z: 4.384848}
+  m_Center: {x: 3.6781667e-10, y: 0.3892281, z: -0.16717649}

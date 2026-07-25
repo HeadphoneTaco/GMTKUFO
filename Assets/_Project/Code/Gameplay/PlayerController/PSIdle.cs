@@ -30,9 +30,14 @@ public class PSIdle : IState
             return;
         }
 
-        Vector3 v = _player.RB.linearVelocity;
-        v.x = 0;
-        _player.RB.linearVelocity = v;
+        // Leave horizontal velocity alone briefly after a hit. Zeroing x every frame would delete
+        // the knockback on the same frame the hazard applied it.
+        if (!_player.IsKnockedBack)
+        {
+            Vector3 v = _player.RB.linearVelocity;
+            v.x = 0;
+            _player.RB.linearVelocity = v;
+        }
         _player.IncreaseBatTime();
     }
 
