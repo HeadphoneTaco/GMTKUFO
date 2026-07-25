@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6746766323522720328}
   - component: {fileID: 3378022776733950410}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GroundK_Road_RightCorner_Cement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,6 +105,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2393bdfb86629494582f1355158d2714, type: 3}
       propertyPath: m_Name
       value: GroundRoad_RightCorner
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2393bdfb86629494582f1355158d2714, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
