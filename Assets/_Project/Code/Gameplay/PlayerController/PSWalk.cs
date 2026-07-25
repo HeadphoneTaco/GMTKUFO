@@ -16,6 +16,7 @@ namespace _Project.Code.Gameplay.PlayerController
         public void Enter()
         {
             // play walk animation
+            _player.MyAnimator.PlayRunning();
             EventManager.DIEvent += ChangeDI;
             Debug.Log("State Entered: Walk");
         }

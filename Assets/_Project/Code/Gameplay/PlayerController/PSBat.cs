@@ -15,6 +15,7 @@ public class PSBat : IState
     public void Enter()
     {
         // transform into a bat
+        _player.MyAnimator.ShowBat();
         Debug.Log("State Entered: Bat");
         _player.RB.useGravity = false;
     }
@@ -30,6 +31,7 @@ public class PSBat : IState
         if (_player != null)
         {
             // transform out of a bat if player isnt null
+            _player.MyAnimator.ShowHumanoid();
             _player.RB.useGravity = true;
         }
     }

@@ -15,6 +15,7 @@ public class PSFalling : IState
     // if the player hits a victim, suck their blood
     public void Enter()
     {
+        _player.MyAnimator.PlayFalling();
         EventManager.DIEvent += ChangeDI;
         Debug.Log("State Entered: falling");
     }

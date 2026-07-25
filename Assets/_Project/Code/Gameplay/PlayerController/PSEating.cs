@@ -15,6 +15,8 @@ public class PSEating : IState
     // 
     public void Enter()
     {
+        // play the eating animation
+        _player.MyAnimator.PlayAttack();
         _player.CanTransform = false;
     }
 

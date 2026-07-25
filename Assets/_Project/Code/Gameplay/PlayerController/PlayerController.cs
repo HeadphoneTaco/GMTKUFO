@@ -41,16 +41,29 @@ namespace _Project.Code.Gameplay.PlayerController
         [SerializeField] private Vector2 BoxCastHalf;
 
         [Header("Animation")]
-        [Tooltip("Animator that plays the player's clips. Leave empty to auto-find one in the children.")]
-        [SerializeField] private Animator _animator;
+        [Tooltip("The humanoid (vampire) model root, shown in humanoid form.")]
+        [SerializeField] private GameObject _humanoidModel;
+        [Tooltip("Animator on the vampire model. Its controller is swapped per state.")]
+        [SerializeField] private Animator _humanoidAnimator;
+        [Tooltip("The bat model root, shown in bat form.")]
+        [SerializeField] private GameObject _batModel;
+
+        [Header("Vampire Animator Controllers")]
+        [SerializeField] private RuntimeAnimatorController _idleController;
+        [SerializeField] private RuntimeAnimatorController _runningController;
+        [SerializeField] private RuntimeAnimatorController _fallingController;
+        [SerializeField] private RuntimeAnimatorController _landingController;
+        [SerializeField] private RuntimeAnimatorController _attackingController;
 
 
 
         private void Awake()
         {
             MyStateMachine = new PlayerStateMachine(this);
-            if (_animator == null) _animator = GetComponentInChildren<Animator>();
-            MyAnimator = new PlayerAnimator(_animator);
+            MyAnimator = new PlayerAnimator(
+                _humanoidModel, _humanoidAnimator, _batModel,
+                _idleController, _runningController, _fallingController,
+                _landingController, _attackingController);
             _groundLayerIndex = LayerMask.GetMask(_groundLayerName);
             RB = GetComponent<Rigidbody>();
             // Side-scroller: keep the body on the XY plane and stop it tipping over
@@ -88,7 +101,7 @@ namespace _Project.Code.Gameplay.PlayerController
             Vector3 v = RB.linearVelocity;
             v.y = _jumpForce;
             RB.linearVelocity = v;
-            MyAnimator.PlayJump();
+            // No dedicated jump clip; the Falling state swaps in the falling controller
             MyStateMachine.ChangeState(MyStateMachine.StateFalling);
         }
         public void ChangeDI(Vector2 directionalInput)

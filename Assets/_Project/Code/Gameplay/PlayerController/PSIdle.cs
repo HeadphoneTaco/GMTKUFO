@@ -15,6 +15,7 @@ public class PSIdle : IState
     public void Enter()
     {
         //enter animation state
+        _player.MyAnimator.PlayIdle();
         EventManager.DIEvent += ChangeDI;
         Debug.Log("State Entered: Idle");
     }
