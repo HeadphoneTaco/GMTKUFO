@@ -127,6 +127,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 414985722242280591, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 606463967}
+    - target: {fileID: 414985722242280591, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayAgain
+      objectReference: {fileID: 0}
+    - target: {fileID: 414985722242280591, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: _Project.Code.UI.EndScreenController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1231008584104345017, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 606463966}
+    - target: {fileID: 1231008584104345017, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1443263117391999612, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
       propertyPath: m_Name
       value: '[UI]EndScreenA'
@@ -171,11 +191,39 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8410591860305444381, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 606463967}
+    - target: {fileID: 8410591860305444381, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8410591860305444381, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: _Project.Code.UI.EndScreenController, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+--- !u!1 &606463966 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1443263117391999612, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+  m_PrefabInstance: {fileID: 606463965}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &606463967 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1303264466432385356, guid: 85afe3743d6b2464983bb0cbcd76cb02, type: 3}
+  m_PrefabInstance: {fileID: 606463965}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606463966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92cc8ed8181412f459870e99ebfdb54c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndScreenController
 --- !u!1 &1488685122
 GameObject:
   m_ObjectHideFlags: 0
