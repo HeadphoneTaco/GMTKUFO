@@ -31,7 +31,7 @@ namespace _Project.Code.Utilities
         /// <summary>Ends the run and banks the score, same as sleeping in a coffin.</summary>
         public void SleepNow()
         {
-            if (GameManager.Exists) GameManager.Instance.EndRun();
+            GameManager.Instance.EndRun(RunOutcome.ReachedCoffin);
         }
 
         /// <summary>Adds test blood to the score so the EndScreen shows a non-zero number.</summary>

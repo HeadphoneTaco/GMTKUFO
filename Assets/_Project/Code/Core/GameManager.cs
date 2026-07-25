@@ -60,8 +60,10 @@ namespace _Project.Code.Core
         [SerializeField] private string _gameSceneName = "Game";
         [Tooltip("Scene loaded by ReturnToMenu(). Blank = don't load, just switch state.")]
         [SerializeField] private string _mainMenuSceneName = "MainMenu";
-        [Tooltip("Scene loaded by EndRun(). Blank = don't load, just switch state (panel-based end screen).")]
-        [SerializeField] private string _endSceneName = "EndScreen";
+        [Tooltip("Loaded when the run ends in death, blood gone. Blank = stay put.")]
+        [SerializeField] private string _deathSceneName = "EndScreenA";
+        [Tooltip("Loaded when the player makes it home to the coffin. Blank = stay put.")]
+        [SerializeField] private string _coffinSceneName = "EndScreenB";
 
         [Header("Pause")]
         [Tooltip("If true, PauseGame() sets Time.timeScale = 0.")]
@@ -89,6 +91,8 @@ namespace _Project.Code.Core
         public bool IsAfterSunrise => _afterSunrise;
         /// <summary>Score banked by the last EndRun(). Stable to read on a separate EndScreen scene.</summary>
         public int LastBankedScore { get; private set; }
+        /// <summary>How the last run finished. Stable to read on the end screen scene.</summary>
+        public RunOutcome LastOutcome { get; private set; }
         /// <summary>Current shadow cover on the player, 0 (sun) .. 1 (shade).</summary>
         public float ShadowAmount => _shadowAmount;
 
@@ -231,18 +235,27 @@ namespace _Project.Code.Core
         }
 
         /// <summary>End the run and bank the current score (player slept in a coffin, or burned out).</summary>
-        public void EndRun()
+        /// <summary>Ends the run as a death. Kept so existing callers and UnityEvents still work.</summary>
+        public void EndRun() => EndRun(RunOutcome.Died);
+
+        /// <summary>
+        /// End the run and hand off to the matching end screen. Death goes to the burning in
+        /// daylight screen, reaching the coffin goes to the safe in the coffin screen.
+        /// </summary>
+        public void EndRun(RunOutcome outcome)
         {
             if (CurrentState == GameState.GameOver) return;
             LastBankedScore = Score;
+            LastOutcome = outcome;
             if (_pauseFreezesTime) Time.timeScale = 1f; // don't leave time frozen on the results screen
             SetState(GameState.GameOver);
             OnRunEnded?.Invoke(LastBankedScore);
 
-            // Separate-scenes flow: hand off to the EndScreen scene, which reads LastBankedScore.
-            // Leave _endSceneName blank to stay put (panel-based results in the current scene).
-            if (!string.IsNullOrEmpty(_endSceneName))
-                SceneManager.LoadScene(_endSceneName);
+            // Separate-scenes flow: hand off to an end screen, which reads LastBankedScore.
+            // Leave the matching name blank to stay put (panel-based results in the current scene).
+            string scene = outcome == RunOutcome.ReachedCoffin ? _coffinSceneName : _deathSceneName;
+            if (!string.IsNullOrEmpty(scene))
+                SceneManager.LoadScene(scene);
         }
 
         /// <summary>Freeze the run. Safe to call from a pause menu.</summary>
