@@ -27,9 +27,9 @@ namespace _Project.Code.Gameplay.PlayerController
         [SerializeField] public float TimeBetweenMist;
         private float _lastTransformationTime;
         [SerializeField] public float DefaultGravity;
-        [SerializeField] private float MaxHealth;
-        private float _currentHealth;
-        [SerializeField] private float _healSpeed;
+        // Blood is the health pool. It lives on GameManager as the score, so there is no MaxHealth
+        // or _currentHealth here any more. Hazards call TakeDamage, which spends blood, and the
+        // run ends when it hits zero.
         [SerializeField] private float _invincibilityTime = 1f;
         private bool IsInvincible;
 
@@ -41,6 +41,9 @@ namespace _Project.Code.Gameplay.PlayerController
 
         /// <summary>True while a recent hit's knockback should be left alone by the movement states.</summary>
         public bool IsKnockedBack => Time.time < _knockbackUntil;
+
+        /// <summary>Bat time left as 0 to 1, for the HUD meter. Guards a zero max, which would divide by zero.</summary>
+        public float BatTimeNormalized => _maxBatTime <= 0f ? 0f : Mathf.Clamp01(_currentBatTime / _maxBatTime);
 
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
@@ -103,7 +106,6 @@ namespace _Project.Code.Gameplay.PlayerController
             EventManager.JumpEvent += Jump;
             _currentBatTime = _maxBatTime;
             LastBatBreakTime = Time.time;
-            _currentHealth = MaxHealth;
         }
         private void OnDisable()
         {
@@ -190,16 +192,11 @@ namespace _Project.Code.Gameplay.PlayerController
 
             _knockbackUntil = Time.time + _knockbackTime;
 
-            // Equal health and damage is death. The old strict less-than left the player alive on
-            // exactly zero health, which then read as an extra free hit.
-            if (_currentHealth <= damage)
-            {
-                _currentHealth = 0;
-                GameManager.Instance.EndRun();
-                return;
-            }
+            // Blood is the health pool, so a hit spends blood. RemoveBlood ends the run itself
+            // when it reaches zero, which is why there is no death check here. Instance rather
+            // than Exists, because Exists stays false until something forces the lazy creation.
+            GameManager.Instance.RemoveBlood(damage);
 
-            _currentHealth -= damage;
             StartCoroutine(InvincibilityTime());
         }
         public IEnumerator InvincibilityTime()

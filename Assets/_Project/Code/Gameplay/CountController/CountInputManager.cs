@@ -8,8 +8,11 @@ namespace _Project.Code.Gameplay.CountController
     {
         public event Action<Vector2> OnMove;
         public event Action<bool> OnJump;
-        public event Action<bool> OnEat;
-        
+        // OnEat removed: nothing raised or subscribed to it, and there is no Eat action in
+        // PlayerInputs to raise it from. Biting is automatic on proximity now, so an eat input is
+        // not planned. Add it back alongside a real input action if that changes.
+
+
         private PlayerInputs _playerInputs;
         private void Awake()
         {

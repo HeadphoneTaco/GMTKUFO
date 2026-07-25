@@ -41,6 +41,10 @@ namespace _Project.Code.Core
         /// <summary>Fired when a run ends. Payload = final banked score.</summary>
         public static event Action<int> OnRunEnded;
 
+        [Header("Blood")]
+        [Tooltip("Blood the player starts a run with. The total is uncapped and climbs from here.")]
+        [SerializeField] private float _startingBlood = 100f;
+
         [Header("Sunrise Countdown")]
         [Tooltip("Seconds of night before the sun rises and the daylight drain begins.")]
         [SerializeField] private float _sunriseDuration = 180f;
@@ -71,8 +75,12 @@ namespace _Project.Code.Core
 
         // ---- Read-only accessors for anyone who'd rather poll than subscribe ----
         public GameState CurrentState { get; private set; } = GameState.MainMenu;
-        /// <summary>Current score as whole blood points (floored).</summary>
-        public int Score => Mathf.FloorToInt(_score);
+        /// <summary>
+        /// Current blood as a whole number. Rounded, not floored. Draining a 100 point victim adds
+        /// a fraction each frame plus the remainder on the last one, which sums to a hair under
+        /// 100 in floating point, so flooring showed a gain of 99.
+        /// </summary>
+        public int Score => Mathf.RoundToInt(_score);
         /// <summary>Seconds left until sunrise (0 once the sun is up).</summary>
         public float TimeRemaining => _timeRemaining;
         /// <summary>0..1 fraction of night remaining, handy for a countdown bar fill.</summary>
@@ -134,10 +142,14 @@ namespace _Project.Code.Core
             _score = Mathf.Max(0f, _score - rate * Time.deltaTime);
 
             // Only fire the event when the whole-point display actually changes, to avoid spamming UI.
-            if (Mathf.FloorToInt(before) != Mathf.FloorToInt(_score))
+            if (Mathf.RoundToInt(before) != Mathf.RoundToInt(_score))
             {
                 OnScoreChanged?.Invoke(Score);
             }
+
+            // Blood is the health pool, so draining to nothing in the sun ends the run the same
+            // way a hazard would.
+            if (_score <= 0f) EndRun();
         }
 
         // ================================================================
@@ -147,16 +159,37 @@ namespace _Project.Code.Core
         /// <summary>Start a fresh run: reset score and clock, go to Playing. Loads the game scene if one is set.</summary>
         public void StartRun()
         {
-            _score = 0f;
+            ResetRunState();
+
+            if (!string.IsNullOrEmpty(_gameSceneName))
+                SceneManager.LoadScene(_gameSceneName);
+
+            BeginPlaying();
+        }
+
+        /// <summary>
+        /// Same as StartRun but without loading a scene, for pressing Play directly in the game
+        /// scene. Without this the state stays MainMenu, so Update returns early and the clock
+        /// never ticks, and AddBlood rejects every drain. That reads as a broken HUD.
+        /// </summary>
+        public void StartRunInCurrentScene()
+        {
+            ResetRunState();
+            BeginPlaying();
+        }
+
+        private void ResetRunState()
+        {
+            _score = _startingBlood;
             _timeRemaining = _sunriseDuration;
             _shadowAmount = 0f;
             _afterSunrise = false;
 
             if (_pauseFreezesTime) Time.timeScale = 1f;
+        }
 
-            if (!string.IsNullOrEmpty(_gameSceneName))
-                SceneManager.LoadScene(_gameSceneName);
-
+        private void BeginPlaying()
+        {
             SetState(GameState.Playing);
             OnRunStarted?.Invoke();
             OnScoreChanged?.Invoke(Score);
@@ -169,6 +202,20 @@ namespace _Project.Code.Core
             if (amount <= 0f || CurrentState != GameState.Playing) return;
             _score += amount;
             OnScoreChanged?.Invoke(Score);
+        }
+
+        /// <summary>
+        /// Take blood away, from a hazard hit or any other cost. Blood doubles as the health pool,
+        /// so reaching zero ends the run. There is no separate health value anywhere.
+        /// </summary>
+        public void RemoveBlood(float amount)
+        {
+            if (amount <= 0f || CurrentState != GameState.Playing) return;
+
+            _score = Mathf.Max(0f, _score - amount);
+            OnScoreChanged?.Invoke(Score);
+
+            if (_score <= 0f) EndRun();
         }
 
         /// <summary>Report how shaded the player currently is: 0 = full open sun, 1 = full shadow.</summary>
