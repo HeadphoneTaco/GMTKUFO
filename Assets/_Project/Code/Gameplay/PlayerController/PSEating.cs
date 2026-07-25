@@ -20,8 +20,9 @@ public class PSEating : IState
     // 
     public void Enter()
     {
-            EventManager.DIEvent += ChangeDI;
             _player.CanTransform = false;
+
+            EventManager.DIEvent += ChangeDI;
             _drainAmount = 0;
             _drainFinished = false;
         _victim = _player.EatCastHit.GetComponent<Victim>();
