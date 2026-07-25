@@ -38,7 +38,12 @@ namespace _Project.Code.Gameplay.PlayerController
         private int _groundLayerIndex;
 
         [Header("EatStats")]
-        [SerializeField] private Vector2 BoxCastHalf;
+        [SerializeField] private Vector3 _boxCastHalf;
+        [SerializeField] private string _victimLayerName;
+        [HideInInspector] public Collider EatCastHit;
+        private Collider[] EatCastHits;
+        private int _victimLayerIndex;
+        [SerializeField] public float BloodDrainSpeed;
 
         [Header("Animation")]
         [Tooltip("Animator that plays the player's clips. Leave empty to auto-find one in the children.")]
@@ -52,6 +57,7 @@ namespace _Project.Code.Gameplay.PlayerController
             if (_animator == null) _animator = GetComponentInChildren<Animator>();
             MyAnimator = new PlayerAnimator(_animator);
             _groundLayerIndex = LayerMask.GetMask(_groundLayerName);
+            _victimLayerIndex = LayerMask.GetMask(_victimLayerName);
             RB = GetComponent<Rigidbody>();
             // Side-scroller: keep the body on the XY plane and stop it tipping over
             RB.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
@@ -75,7 +81,10 @@ namespace _Project.Code.Gameplay.PlayerController
         {
             MyStateMachine.Execute();
         }
-
+        void FixedUpdate()
+        {
+            MyStateMachine.FixedUpdate();
+        }
         public bool IsGrounded()
         {
             return Physics.Raycast(transform.position + _groundCheckOffset * Vector3.down, Vector3.down, _groundCheckDistance, _groundLayerIndex);
@@ -123,6 +132,13 @@ namespace _Project.Code.Gameplay.PlayerController
             {
                 _currentBatTime = Mathf.Clamp( _currentBatTime + _batTimeFillRate * Time.deltaTime, 0, _maxBatTime );
             }
+        }
+        public bool CheckForVictims()
+        {
+            EatCastHits = Physics.OverlapBox(transform.position, _boxCastHalf, Quaternion.identity, _victimLayerIndex);
+            if (EatCastHits.Length > 0) { EatCastHit = EatCastHits[0]; return true; }
+            else return false;
+            //return Physics.BoxCast(transform.position, _boxCastHalf, new Vector3(0,0,1), out EatCastHit, Quaternion.identity, 20f, _victimLayerIndex);
         }
     }
 }

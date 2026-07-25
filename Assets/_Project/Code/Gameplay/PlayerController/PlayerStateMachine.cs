@@ -43,5 +43,6 @@ namespace _Project.Code.Gameplay.PlayerController
         {
             _currentState?.Execute();
         }
+        public void FixedUpdate() {_currentState?.FixedUpdate(); }
     }
 }

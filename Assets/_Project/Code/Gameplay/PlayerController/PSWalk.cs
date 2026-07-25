@@ -40,5 +40,9 @@ namespace _Project.Code.Gameplay.PlayerController
             _player.ChangeDI(direction);
             if (direction.x == 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);
         }
+
+        public void FixedUpdate()
+        {
+        }
     }
 }
