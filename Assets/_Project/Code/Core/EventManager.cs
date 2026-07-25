@@ -7,3 +7,4 @@ public static class EventManager
     public static Action<bool> TransformationChanged;
     public static Action JumpEvent;
 }
+

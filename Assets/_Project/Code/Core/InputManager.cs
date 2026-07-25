@@ -32,5 +32,6 @@ public class InputManager : MonoBehaviour
     public void OnMove(Vector2 di)
     {
         EventManager.DIEvent(di);
+        
     }
 }
