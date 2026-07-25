@@ -167,50 +167,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2433406555965909126, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 148062120}
-    - target: {fileID: 2433406555965909126, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PlayAgain
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433406555965909126, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: _Project.Code.UI.EndScreenController, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 6444148398536591056, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
       propertyPath: m_Name
       value: '[UI]EndScreenB'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537420648045379434, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 148062120}
-    - target: {fileID: 7537420648045379434, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MainMenu
-      objectReference: {fileID: 0}
-    - target: {fileID: 7537420648045379434, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: _Project.Code.UI.EndScreenController, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
---- !u!114 &148062120 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7292496753191364312, guid: 91f35f2c636f02d448bf22cf5cb70f8c, type: 3}
-  m_PrefabInstance: {fileID: 148062119}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92cc8ed8181412f459870e99ebfdb54c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndScreenController
 --- !u!1 &1488685122
 GameObject:
   m_ObjectHideFlags: 0
