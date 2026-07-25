@@ -38,5 +38,9 @@ public class PSIdle : IState
         _player.ChangeDI(direction);
         if (direction.x != 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateWalk);
     }
-}
+
+        public void FixedUpdate()
+        {
+        }
+    }
 }

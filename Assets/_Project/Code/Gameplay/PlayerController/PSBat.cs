@@ -39,5 +39,9 @@ public class PSBat : IState
     {
         _player.ChangeDI(direction);
     }
-}
+
+        public void FixedUpdate()
+        {
+        }
+    }
 }

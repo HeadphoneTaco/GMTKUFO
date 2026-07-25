@@ -1,3 +1,5 @@
+using _Project.Code.Core;
+using System.Collections;
 using UnityEngine;
 
 namespace _Project.Code.Gameplay.PlayerController
@@ -25,6 +27,11 @@ namespace _Project.Code.Gameplay.PlayerController
         [SerializeField] public float TimeBetweenMist;
         private float _lastTransformationTime;
         [SerializeField] public float DefaultGravity;
+        [SerializeField] private float MaxHealth;
+        private float _currentHealth;
+        [SerializeField] private float _healSpeed;
+        [SerializeField] private float _invincibilityTime;
+        private bool IsInvincible;
 
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
@@ -38,7 +45,12 @@ namespace _Project.Code.Gameplay.PlayerController
         private int _groundLayerIndex;
 
         [Header("EatStats")]
-        [SerializeField] private Vector2 BoxCastHalf;
+        [SerializeField] private Vector3 _boxCastHalf;
+        [SerializeField] private string _victimLayerName;
+        [HideInInspector] public Collider EatCastHit;
+        private Collider[] EatCastHits;
+        private int _victimLayerIndex;
+        [SerializeField] public float BloodDrainSpeed;
 
         [Header("Animation")]
         [Tooltip("The humanoid (vampire) model root, shown in humanoid form.")]
@@ -65,6 +77,7 @@ namespace _Project.Code.Gameplay.PlayerController
                 _idleController, _runningController, _fallingController,
                 _landingController, _attackingController);
             _groundLayerIndex = LayerMask.GetMask(_groundLayerName);
+            _victimLayerIndex = LayerMask.GetMask(_victimLayerName);
             RB = GetComponent<Rigidbody>();
             // Side-scroller: keep the body on the XY plane and stop it tipping over
             RB.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
@@ -76,6 +89,7 @@ namespace _Project.Code.Gameplay.PlayerController
             EventManager.JumpEvent += Jump;
             _currentBatTime = _maxBatTime;
             LastBatBreakTime = Time.time;
+            _currentHealth = MaxHealth;
         }
         private void OnDisable()
         {
@@ -88,7 +102,10 @@ namespace _Project.Code.Gameplay.PlayerController
         {
             MyStateMachine.Execute();
         }
-
+        void FixedUpdate()
+        {
+            MyStateMachine.FixedUpdate();
+        }
         public bool IsGrounded()
         {
             return Physics.Raycast(transform.position + _groundCheckOffset * Vector3.down, Vector3.down, _groundCheckDistance, _groundLayerIndex);
@@ -136,6 +153,34 @@ namespace _Project.Code.Gameplay.PlayerController
             {
                 _currentBatTime = Mathf.Clamp( _currentBatTime + _batTimeFillRate * Time.deltaTime, 0, _maxBatTime );
             }
+        }
+        public bool CheckForVictims()
+        {
+            EatCastHits = Physics.OverlapBox(transform.position, _boxCastHalf, Quaternion.identity, _victimLayerIndex);
+            if (EatCastHits.Length > 0) { EatCastHit = EatCastHits[0]; return true; }
+            else return false;
+            //return Physics.BoxCast(transform.position, _boxCastHalf, new Vector3(0,0,1), out EatCastHit, Quaternion.identity, 20f, _victimLayerIndex);
+        }
+        public void TakeDamage(float damage, Vector3 BounceDirection)
+        {
+            RB.linearVelocity += BounceDirection ;
+            if (!IsInvincible) { 
+            if (_currentHealth < damage)
+            {
+                _currentHealth = 0;
+                GameManager.Instance.EndRun();
+            }
+            else
+            {
+                _currentHealth -= damage;
+            }
+            }
+        }
+        public IEnumerator InvincibilityTime()
+        {
+            IsInvincible = true;
+            yield return new WaitForSeconds(_invincibilityTime);
+            IsInvincible = false;
         }
     }
 }

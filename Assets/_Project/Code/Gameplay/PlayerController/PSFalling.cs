@@ -41,5 +41,13 @@ public class PSFalling : IState
         _player.ChangeDI(direction);
     }
 
-}
+        public void FixedUpdate()
+        {
+            if (_player.CheckForVictims())
+            {
+                Debug.Log("found");
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateEating);
+            }
+        }
+    }
 }
