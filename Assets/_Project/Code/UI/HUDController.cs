@@ -18,12 +18,26 @@ namespace _Project.Code.UI
         [SerializeField] private Slider _batSlider;
 
         [Header("Sunrise Clock")]
-        [Tooltip("The circular clock face. Its Image Type must be Filled, not Simple, or the fill " +
-                 "amount does nothing. Fill Method is already Radial 360.")]
-        [SerializeField] private Image _clockFill;
+        [Tooltip("Slow hand, one full turn over the whole night by default. Its pivot must sit at " +
+                 "the end that stays put, normally bottom centre, or it will orbit instead of turn.")]
+        [SerializeField] private RectTransform _hourHand;
 
-        [Tooltip("Off: the circle empties as the night runs out. On: it fills toward sunrise.")]
-        [SerializeField] private bool _clockFillsTowardSunrise;
+        [Tooltip("Turns this many times over one night. 1 means it points at sunrise the whole run.")]
+        [SerializeField] private float _hourHandTurns = 1f;
+
+        [Tooltip("Optional fast hand. Leave empty for a single hand clock.")]
+        [SerializeField] private RectTransform _minuteHand;
+
+        [Tooltip("Turns this many times over one night. At a 360 second night, 6 gives one turn " +
+                 "per minute, which is the most readable rate for a short run.")]
+        [SerializeField] private float _minuteHandTurns = 6f;
+
+        [Tooltip("Angle both hands sit at when the night begins. 0 points them straight up if the " +
+                 "art is drawn pointing up.")]
+        [SerializeField] private float _handStartAngle;
+
+        [Tooltip("On: hands sweep clockwise like a real clock. Off: counter clockwise.")]
+        [SerializeField] private bool _handsRunClockwise = true;
 
         [Header("Blood")]
         [Tooltip("The top right bar. Fills from 0 to Blood Bar Max, then stays full.")]
@@ -85,12 +99,28 @@ namespace _Project.Code.UI
             if (_batSlider != null && _player != null)
                 _batSlider.value = _player.BatTimeNormalized;
 
-            if (_clockFill != null)
-            {
-                // NightProgress is 1 at dusk and 0 at sunrise.
-                float night = GM.NightProgress;
-                _clockFill.fillAmount = _clockFillsTowardSunrise ? 1f - night : night;
-            }
+            UpdateClockHands();
+        }
+
+        private void UpdateClockHands()
+        {
+            if (_hourHand == null && _minuteHand == null) return;
+
+            // NightProgress is 1 at dusk and 0 at sunrise, so this is the fraction of night used.
+            float elapsed = 1f - GM.NightProgress;
+
+            if (_hourHand != null) SetHandAngle(_hourHand, elapsed, _hourHandTurns);
+            if (_minuteHand != null) SetHandAngle(_minuteHand, elapsed, _minuteHandTurns);
+        }
+
+        private void SetHandAngle(RectTransform hand, float elapsed, float turns)
+        {
+            float sweep = elapsed * 360f * turns;
+
+            // Positive Z rotates counter clockwise in Unity, so a clockwise sweep is negative.
+            if (_handsRunClockwise) sweep = -sweep;
+
+            hand.localRotation = Quaternion.Euler(0f, 0f, _handStartAngle + sweep);
         }
 
         private void HandleRunStarted() => RefreshBlood();
