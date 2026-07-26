@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       propertyPath: m_Name
-      value: GatorHazarad
+      value: GatorHazard
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -65,6 +65,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5626695867928634187}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e4160cca72b51064ab60b24c61590262, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 991380522083633920}
   m_SourcePrefab: {fileID: 100100000, guid: e4160cca72b51064ab60b24c61590262, type: 3}
 --- !u!1 &5892673284265473909 stripped
 GameObject:
@@ -130,3 +133,40 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.79127204, z: 4.384848}
   m_Center: {x: 3.6781667e-10, y: 0.3892281, z: -0.16717649}
+--- !u!114 &991380522083633920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5892673284265473909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd1b58a91427c244a19be6de540d6f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HazardAI
+  _idleMode: 0
+  _patrolRange: 6
+  _patrolSpeed: 2
+  _patrolPause: 0.75
+  _sightRange: 12
+  _loseRange: 18
+  _chaseSpeed: 4
+  _maxChaseTime: 5
+  _leashFromHome: 25
+  _reacquireDelay: 2
+  _returnHome: 1
+  _stopAtLedges: 1
+  _groundLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  _ledgeProbeAhead: 1.2
+  _turnToFaceMovement: 1
+  _yawFacingRight: 90
+  _yawFacingLeft: -90
+  _turnSpeed: 540
+  _animator: {fileID: 6705437562043497339}
+  _idleController: {fileID: 9100000, guid: 343aa83f12cad1246989d33c155b9dc7, type: 2}
+  _patrolController: {fileID: 9100000, guid: cd62a751aac9bc144bd8ca833215785d, type: 2}
+  _chaseController: {fileID: 9100000, guid: cd62a751aac9bc144bd8ca833215785d, type: 2}
+  _drawGizmos: 1
