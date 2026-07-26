@@ -93,8 +93,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: d9a50a11362559a4c9f6c338bcd8fe27, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: ac3312e2f2cbb94448698fa3f97b7f42, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -549,12 +549,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f85ba3e1acdc154985ac7f1b505f6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  _startingBlood: 100
   _sunriseDuration: 360
   _sunDrainPerSecond: 1
   _shadowDrainPerSecond: 0.1
   _gameSceneName: Game
   _mainMenuSceneName: MainMenu
-  _endSceneName: EndScreen
+  _deathSceneName: EndScreenA
+  _coffinSceneName: EndScreenB
   _pauseFreezesTime: 1
 --- !u!4 &1979985672
 Transform:

@@ -15,7 +15,19 @@ namespace _Project.Code.Gameplay.PlayerController
 
         [Header("Player Stats")]
         [SerializeField] public float WalkSpeed;
+
+        [Tooltip("Bat flight ACCELERATION, not a speed. PSBat adds this to velocity every frame " +
+                 "with gravity off, so held input compounds. Read it together with MaxFlySpeed.")]
         [SerializeField] public float FlySpeed;
+
+        [Tooltip("Hard ceiling on flight speed. Without this, flight accelerates for the whole " +
+                 "bat meter with nothing to stop it: at FlySpeed 20 over a 3 second meter the " +
+                 "player reaches 60 units per second, twelve times walking pace, which is what " +
+                 "playtesters described as flying being exponentially fast. It also keeps the " +
+                 "per physics step travel small enough that ordinary colliders can catch him. " +
+                 "At a 0.02 timestep, 15 units per second is 0.3 units per step.")]
+        [SerializeField] public float MaxFlySpeed = 15f;
+
         [SerializeField] public float MistSpeed;
         [SerializeField] public float MistTime;
         [SerializeField] private float _maxBatTime;
@@ -69,6 +81,16 @@ namespace _Project.Code.Gameplay.PlayerController
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
         [SerializeField] private float _jumpForce = 8f;
+
+        [Header("Out Of Bounds")]
+        [Tooltip("Falling below this world Y ends the run as a death. Set it comfortably below " +
+                 "the lowest piece of walkable ground. A solid floor collider is not a substitute: " +
+                 "it catches the player at the bottom of a pit with no way to climb out, which " +
+                 "reads worse than dying. This routes into the death screen that already exists.")]
+        [SerializeField] private float _fallKillY = -25f;
+
+        // Latched so a player sitting below the threshold does not call EndRun every frame.
+        private bool _outOfBoundsHandled;
 
 
         [Header("GroundCheck")]
@@ -194,6 +216,23 @@ namespace _Project.Code.Gameplay.PlayerController
         {
             MyStateMachine.Execute();
             UpdateFacing();
+            CheckOutOfBounds();
+        }
+
+        /// <summary>
+        /// Ends the run if the player has fallen out of the level.
+        ///
+        /// Uses GameManager.Instance rather than guarding on Exists, per the project rule: Exists
+        /// stays false forever when the Game scene is played directly, so the guard would silently
+        /// do nothing in the editor and only work from the main menu.
+        /// </summary>
+        private void CheckOutOfBounds()
+        {
+            if (_outOfBoundsHandled) return;
+            if (transform.position.y > _fallKillY) return;
+
+            _outOfBoundsHandled = true;
+            GameManager.Instance.EndRun();
         }
 
         /// <summary>
