@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9905e5f181904194ad6cb66e08c9fccd, type: 3}
+  m_Name: HazardsBucket
+  m_EditorClassIdentifier: CoreUtils::CoreUtils.AssetBuckets.PrefabBucket
+  m_BucketName: 
+  m_Sources:
+  - {fileID: 102900000, guid: 165cd52910d6ec84280e947d52702b36, type: 3}
+  m_AssetRefs:
+  - Name: kangaroohazard
+    Guid: 651a84510d7a66743b64f95be7f64d79
+    Asset: {fileID: 1662960937356597686, guid: 651a84510d7a66743b64f95be7f64d79, type: 3}
+  - Name: gatorhazard
+    Guid: e084dbe66023818418fff318ab7a6a56
+    Asset: {fileID: 5892673284265473909, guid: e084dbe66023818418fff318ab7a6a56, type: 3}
+  m_ManualUpdate: 0

@@ -41,6 +41,10 @@ namespace _Project.Code.Core
         /// <summary>Fired when a run ends. Payload = final banked score.</summary>
         public static event Action<int> OnRunEnded;
 
+        [Header("Blood")]
+        [Tooltip("Blood the player starts a run with. The total is uncapped and climbs from here.")]
+        [SerializeField] private float _startingBlood = 100f;
+
         [Header("Sunrise Countdown")]
         [Tooltip("Seconds of night before the sun rises and the daylight drain begins.")]
         [SerializeField] private float _sunriseDuration = 180f;
@@ -56,8 +60,10 @@ namespace _Project.Code.Core
         [SerializeField] private string _gameSceneName = "Game";
         [Tooltip("Scene loaded by ReturnToMenu(). Blank = don't load, just switch state.")]
         [SerializeField] private string _mainMenuSceneName = "MainMenu";
-        [Tooltip("Scene loaded by EndRun(). Blank = don't load, just switch state (panel-based end screen).")]
-        [SerializeField] private string _endSceneName = "EndScreen";
+        [Tooltip("Loaded when the run ends in death, blood gone. Blank = stay put.")]
+        [SerializeField] private string _deathSceneName = "EndScreenA";
+        [Tooltip("Loaded when the player makes it home to the coffin. Blank = stay put.")]
+        [SerializeField] private string _coffinSceneName = "EndScreenB";
 
         [Header("Pause")]
         [Tooltip("If true, PauseGame() sets Time.timeScale = 0.")]
@@ -71,8 +77,12 @@ namespace _Project.Code.Core
 
         // ---- Read-only accessors for anyone who'd rather poll than subscribe ----
         public GameState CurrentState { get; private set; } = GameState.MainMenu;
-        /// <summary>Current score as whole blood points (floored).</summary>
-        public int Score => Mathf.FloorToInt(_score);
+        /// <summary>
+        /// Current blood as a whole number. Rounded, not floored. Draining a 100 point victim adds
+        /// a fraction each frame plus the remainder on the last one, which sums to a hair under
+        /// 100 in floating point, so flooring showed a gain of 99.
+        /// </summary>
+        public int Score => Mathf.RoundToInt(_score);
         /// <summary>Seconds left until sunrise (0 once the sun is up).</summary>
         public float TimeRemaining => _timeRemaining;
         /// <summary>0..1 fraction of night remaining, handy for a countdown bar fill.</summary>
@@ -81,6 +91,8 @@ namespace _Project.Code.Core
         public bool IsAfterSunrise => _afterSunrise;
         /// <summary>Score banked by the last EndRun(). Stable to read on a separate EndScreen scene.</summary>
         public int LastBankedScore { get; private set; }
+        /// <summary>How the last run finished. Stable to read on the end screen scene.</summary>
+        public RunOutcome LastOutcome { get; private set; }
         /// <summary>Current shadow cover on the player, 0 (sun) .. 1 (shade).</summary>
         public float ShadowAmount => _shadowAmount;
 
@@ -134,10 +146,14 @@ namespace _Project.Code.Core
             _score = Mathf.Max(0f, _score - rate * Time.deltaTime);
 
             // Only fire the event when the whole-point display actually changes, to avoid spamming UI.
-            if (Mathf.FloorToInt(before) != Mathf.FloorToInt(_score))
+            if (Mathf.RoundToInt(before) != Mathf.RoundToInt(_score))
             {
                 OnScoreChanged?.Invoke(Score);
             }
+
+            // Blood is the health pool, so draining to nothing in the sun ends the run the same
+            // way a hazard would.
+            if (_score <= 0f) EndRun();
         }
 
         // ================================================================
@@ -147,16 +163,37 @@ namespace _Project.Code.Core
         /// <summary>Start a fresh run: reset score and clock, go to Playing. Loads the game scene if one is set.</summary>
         public void StartRun()
         {
-            _score = 0f;
+            ResetRunState();
+
+            if (!string.IsNullOrEmpty(_gameSceneName))
+                SceneManager.LoadScene(_gameSceneName);
+
+            BeginPlaying();
+        }
+
+        /// <summary>
+        /// Same as StartRun but without loading a scene, for pressing Play directly in the game
+        /// scene. Without this the state stays MainMenu, so Update returns early and the clock
+        /// never ticks, and AddBlood rejects every drain. That reads as a broken HUD.
+        /// </summary>
+        public void StartRunInCurrentScene()
+        {
+            ResetRunState();
+            BeginPlaying();
+        }
+
+        private void ResetRunState()
+        {
+            _score = _startingBlood;
             _timeRemaining = _sunriseDuration;
             _shadowAmount = 0f;
             _afterSunrise = false;
 
             if (_pauseFreezesTime) Time.timeScale = 1f;
+        }
 
-            if (!string.IsNullOrEmpty(_gameSceneName))
-                SceneManager.LoadScene(_gameSceneName);
-
+        private void BeginPlaying()
+        {
             SetState(GameState.Playing);
             OnRunStarted?.Invoke();
             OnScoreChanged?.Invoke(Score);
@@ -169,6 +206,20 @@ namespace _Project.Code.Core
             if (amount <= 0f || CurrentState != GameState.Playing) return;
             _score += amount;
             OnScoreChanged?.Invoke(Score);
+        }
+
+        /// <summary>
+        /// Take blood away, from a hazard hit or any other cost. Blood doubles as the health pool,
+        /// so reaching zero ends the run. There is no separate health value anywhere.
+        /// </summary>
+        public void RemoveBlood(float amount)
+        {
+            if (amount <= 0f || CurrentState != GameState.Playing) return;
+
+            _score = Mathf.Max(0f, _score - amount);
+            OnScoreChanged?.Invoke(Score);
+
+            if (_score <= 0f) EndRun();
         }
 
         /// <summary>Report how shaded the player currently is: 0 = full open sun, 1 = full shadow.</summary>
@@ -184,18 +235,27 @@ namespace _Project.Code.Core
         }
 
         /// <summary>End the run and bank the current score (player slept in a coffin, or burned out).</summary>
-        public void EndRun()
+        /// <summary>Ends the run as a death. Kept so existing callers and UnityEvents still work.</summary>
+        public void EndRun() => EndRun(RunOutcome.Died);
+
+        /// <summary>
+        /// End the run and hand off to the matching end screen. Death goes to the burning in
+        /// daylight screen, reaching the coffin goes to the safe in the coffin screen.
+        /// </summary>
+        public void EndRun(RunOutcome outcome)
         {
             if (CurrentState == GameState.GameOver) return;
             LastBankedScore = Score;
+            LastOutcome = outcome;
             if (_pauseFreezesTime) Time.timeScale = 1f; // don't leave time frozen on the results screen
             SetState(GameState.GameOver);
             OnRunEnded?.Invoke(LastBankedScore);
 
-            // Separate-scenes flow: hand off to the EndScreen scene, which reads LastBankedScore.
-            // Leave _endSceneName blank to stay put (panel-based results in the current scene).
-            if (!string.IsNullOrEmpty(_endSceneName))
-                SceneManager.LoadScene(_endSceneName);
+            // Separate-scenes flow: hand off to an end screen, which reads LastBankedScore.
+            // Leave the matching name blank to stay put (panel-based results in the current scene).
+            string scene = outcome == RunOutcome.ReachedCoffin ? _coffinSceneName : _deathSceneName;
+            if (!string.IsNullOrEmpty(scene))
+                SceneManager.LoadScene(scene);
         }
 
         /// <summary>Freeze the run. Safe to call from a pause menu.</summary>

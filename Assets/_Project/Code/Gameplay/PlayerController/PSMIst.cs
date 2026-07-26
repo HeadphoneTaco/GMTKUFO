@@ -60,5 +60,14 @@ public class PSMist : IState
     {
         _player.ChangeDI(direction);
     }
-}
+
+        public void FixedUpdate()
+        {
+            if(_player.CheckForVictims())
+            {
+                Debug.Log("Found");
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateEating);
+            }
+        }
+    }
 }

@@ -15,15 +15,29 @@ public class PSIdle : IState
     public void Enter()
     {
         //enter animation state
+        _player.MyAnimator.PlayIdle();
         EventManager.DIEvent += ChangeDI;
         Debug.Log("State Entered: Idle");
     }
 
     public void Execute()
     {
-        Vector3 v = _player.RB.linearVelocity;
-        v.x = 0;
-        _player.RB.linearVelocity = v;
+        // Automatic bite: anyone who wanders into reach gets drained, no input needed. Matches
+        // how Falling and Mist already behave.
+        if (_player.CheckForVictims())
+        {
+            _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateEating);
+            return;
+        }
+
+        // Leave horizontal velocity alone briefly after a hit. Zeroing x every frame would delete
+        // the knockback on the same frame the hazard applied it.
+        if (!_player.IsKnockedBack)
+        {
+            Vector3 v = _player.RB.linearVelocity;
+            v.x = 0;
+            _player.RB.linearVelocity = v;
+        }
         _player.IncreaseBatTime();
     }
 
@@ -37,5 +51,9 @@ public class PSIdle : IState
         _player.ChangeDI(direction);
         if (direction.x != 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateWalk);
     }
-}
+
+        public void FixedUpdate()
+        {
+        }
+    }
 }

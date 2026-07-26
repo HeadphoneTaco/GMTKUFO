@@ -1,3 +1,5 @@
+using _Project.Code.Core;
+using System.Collections;
 using UnityEngine;
 
 namespace _Project.Code.Gameplay.PlayerController
@@ -25,6 +27,44 @@ namespace _Project.Code.Gameplay.PlayerController
         [SerializeField] public float TimeBetweenMist;
         private float _lastTransformationTime;
         [SerializeField] public float DefaultGravity;
+        // Blood is the health pool. It lives on GameManager as the score, so there is no MaxHealth
+        // or _currentHealth here any more. Hazards call TakeDamage, which spends blood, and the
+        // run ends when it hits zero.
+        [SerializeField] private float _invincibilityTime = 1f;
+        private bool IsInvincible;
+
+        [Tooltip("Seconds after a hit during which the movement states stop overwriting horizontal " +
+                 "velocity, so the knockback is actually visible. Walk and Idle both assign x " +
+                 "every frame, which otherwise erases it before it moves the player at all.")]
+        [SerializeField] private float _knockbackTime = 0.25f;
+        private float _knockbackUntil;
+
+        /// <summary>True while a recent hit's knockback should be left alone by the movement states.</summary>
+        public bool IsKnockedBack => Time.time < _knockbackUntil;
+
+        /// <summary>Bat time left as 0 to 1, for the HUD meter. Guards a zero max, which would divide by zero.</summary>
+        public float BatTimeNormalized => _maxBatTime <= 0f ? 0f : Mathf.Clamp01(_currentBatTime / _maxBatTime);
+
+        [Header("Facing")]
+        [Tooltip("Off: the model keeps whatever rotation it was placed with and never turns.")]
+        [SerializeField] private bool _turnToFaceMovement = true;
+
+        [Tooltip("Y rotation when moving right. The player is authored at 90, which points the " +
+                 "model's forward down positive X.")]
+        [SerializeField] private float _yawFacingRight = 90f;
+
+        [Tooltip("Y rotation when moving left.")]
+        [SerializeField] private float _yawFacingLeft = -90f;
+
+        [Tooltip("Degrees per second for the turn. 0 snaps instantly. 720 is a brisk half turn in " +
+                 "a quarter second.")]
+        [SerializeField] private float _turnSpeed = 720f;
+
+        [Tooltip("Input below this counts as neutral, so a stick resting slightly off centre does " +
+                 "not flip him back and forth.")]
+        [SerializeField] private float _turnInputDeadzone = 0.1f;
+
+        private float _targetYaw;
 
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
@@ -32,29 +72,108 @@ namespace _Project.Code.Gameplay.PlayerController
 
 
         [Header("GroundCheck")]
+        [Tooltip("On: offset and distance are computed from the capsule at Awake and the two values " +
+                 "below are ignored. Off: the values below are used as typed.")]
+        [SerializeField] private bool _autoSizeGroundCheck = true;
+
+        [Tooltip("How far above the capsule's bottom the ray starts. It must start INSIDE the " +
+                 "capsule. A ray starting at or below the feet begins under the floor and cannot " +
+                 "detect it.")]
+        [SerializeField] private float _groundRayInset = 0.15f;
+
+        [Tooltip("How far past the capsule's bottom the ray reaches. This is the real tolerance " +
+                 "for slopes, bumps and settling.")]
+        [SerializeField] private float _groundRayReach = 0.15f;
+
         [SerializeField] private float _groundCheckOffset;
         [SerializeField] private float _groundCheckDistance;
         [SerializeField] private string _groundLayerName;
         private int _groundLayerIndex;
 
         [Header("EatStats")]
-        [SerializeField] private Vector2 BoxCastHalf;
+        [SerializeField] private Vector3 _boxCastHalf;
+        [SerializeField] private string _victimLayerName;
+        [HideInInspector] public Collider EatCastHit;
+        private Collider[] EatCastHits;
+        private int _victimLayerIndex;
+        [SerializeField] public float BloodDrainSpeed;
+        [Tooltip("How close the player is pulled to the victim when a bite starts. The bite can " +
+                 "trigger from up to _boxCastHalf.x away, which reads as biting thin air. Keep " +
+                 "this above the two collider radii added together, about 0.7 here, or they end " +
+                 "up inside each other and physics shoves the player back out of the bite.")]
+        [SerializeField] public float BiteStandoff = 0.75f;
 
         [Header("Animation")]
-        [Tooltip("Animator that plays the player's clips. Leave empty to auto-find one in the children.")]
-        [SerializeField] private Animator _animator;
+        [Tooltip("The humanoid (vampire) model root, shown in humanoid form.")]
+        [SerializeField] private GameObject _humanoidModel;
+        [Tooltip("Animator on the vampire model. Its controller is swapped per state.")]
+        [SerializeField] private Animator _humanoidAnimator;
+        [Tooltip("The bat model root, shown in bat form.")]
+        [SerializeField] private GameObject _batModel;
+
+        [Header("Vampire Animator Controllers")]
+        [SerializeField] private RuntimeAnimatorController _idleController;
+        [SerializeField] private RuntimeAnimatorController _runningController;
+        [SerializeField] private RuntimeAnimatorController _fallingController;
+        [SerializeField] private RuntimeAnimatorController _landingController;
+        [SerializeField] private RuntimeAnimatorController _attackingController;
 
 
 
         private void Awake()
         {
             MyStateMachine = new PlayerStateMachine(this);
-            if (_animator == null) _animator = GetComponentInChildren<Animator>();
-            MyAnimator = new PlayerAnimator(_animator);
+            MyAnimator = new PlayerAnimator(
+                _humanoidModel, _humanoidAnimator, _batModel,
+                _idleController, _runningController, _fallingController,
+                _landingController, _attackingController);
             _groundLayerIndex = LayerMask.GetMask(_groundLayerName);
+            _victimLayerIndex = LayerMask.GetMask(_victimLayerName);
             RB = GetComponent<Rigidbody>();
             // Side-scroller: keep the body on the XY plane and stop it tipping over
             RB.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            ConfigureGroundCheck();
+
+            // Hold whatever facing the player was placed with until input says otherwise. Left at
+            // zero he would swing round to face the camera on the first frame.
+            _targetYaw = transform.eulerAngles.y;
+        }
+
+        /// <summary>
+        /// Derives the ground ray from the capsule instead of trusting hand-typed numbers.
+        ///
+        /// Those numbers have to track the collider, and nothing enforces it. Resizing the capsule
+        /// silently breaks IsGrounded, which surfaces much later as the player being stuck in the
+        /// falling animation, so the symptom points nowhere near the cause. That has cost time
+        /// three separate times on this project.
+        ///
+        /// Two failure modes, and the safe window between them is narrow:
+        ///   offset too small  -> the ray stops inside the capsule, above the floor, never hits
+        ///   offset too large  -> the ray starts below the feet, under the floor, never hits
+        /// </summary>
+        private void ConfigureGroundCheck()
+        {
+            if (!_autoSizeGroundCheck) return;
+
+            var capsule = GetComponent<CapsuleCollider>();
+            if (capsule == null)
+            {
+                Debug.LogWarning("[PlayerController] Auto ground check needs a CapsuleCollider on " +
+                                 "this object. Falling back to the values in the Inspector.", this);
+                return;
+            }
+
+            // Distance from the transform origin down to the bottom of the capsule, in world units.
+            float scaleY = Mathf.Abs(transform.lossyScale.y);
+            float bottom = -(capsule.center.y - capsule.height * 0.5f) * scaleY;
+
+            _groundCheckOffset = bottom - _groundRayInset;
+            _groundCheckDistance = _groundRayInset + _groundRayReach;
+
+            if (_groundCheckOffset <= 0f)
+                Debug.LogWarning($"[PlayerController] Capsule bottom is only {bottom:F3} below the " +
+                                 $"origin, less than the {_groundRayInset} inset, so the ray would " +
+                                 "start above the origin. Lower the inset.", this);
         }
         private void OnEnable()
         {
@@ -74,8 +193,40 @@ namespace _Project.Code.Gameplay.PlayerController
         public void Update()
         {
             MyStateMachine.Execute();
+            UpdateFacing();
         }
 
+        /// <summary>
+        /// Turns the whole player to face the direction of travel.
+        ///
+        /// Driven by input rather than velocity, so the turn happens the instant the stick moves
+        /// rather than after the body has picked up speed. Facing is held when input returns to
+        /// neutral, so stopping does not snap him back to a default direction.
+        ///
+        /// Safe to rotate the root: the ground ray casts straight down, the victim overlap box
+        /// uses Quaternion.identity, and the camera is not parented to the player, so none of them
+        /// care which way this is pointing.
+        /// </summary>
+        private void UpdateFacing()
+        {
+            if (!_turnToFaceMovement) return;
+
+            float x = DirectionalInput.x;
+            if (Mathf.Abs(x) > _turnInputDeadzone)
+                _targetYaw = x > 0f ? _yawFacingRight : _yawFacingLeft;
+
+            Quaternion target = Quaternion.Euler(0f, _targetYaw, 0f);
+
+            // Rotation is frozen on the rigidbody, so assigning the transform directly is safe and
+            // will not be fought by physics.
+            transform.rotation = _turnSpeed <= 0f
+                ? target
+                : Quaternion.RotateTowards(transform.rotation, target, _turnSpeed * Time.deltaTime);
+        }
+        void FixedUpdate()
+        {
+            MyStateMachine.FixedUpdate();
+        }
         public bool IsGrounded()
         {
             return Physics.Raycast(transform.position + _groundCheckOffset * Vector3.down, Vector3.down, _groundCheckDistance, _groundLayerIndex);
@@ -88,7 +239,7 @@ namespace _Project.Code.Gameplay.PlayerController
             Vector3 v = RB.linearVelocity;
             v.y = _jumpForce;
             RB.linearVelocity = v;
-            MyAnimator.PlayJump();
+            // No dedicated jump clip; the Falling state swaps in the falling controller
             MyStateMachine.ChangeState(MyStateMachine.StateFalling);
         }
         public void ChangeDI(Vector2 directionalInput)
@@ -123,6 +274,41 @@ namespace _Project.Code.Gameplay.PlayerController
             {
                 _currentBatTime = Mathf.Clamp( _currentBatTime + _batTimeFillRate * Time.deltaTime, 0, _maxBatTime );
             }
+        }
+        public bool CheckForVictims()
+        {
+            EatCastHits = Physics.OverlapBox(transform.position, _boxCastHalf, Quaternion.identity, _victimLayerIndex);
+            if (EatCastHits.Length > 0) { EatCastHit = EatCastHits[0]; return true; }
+            else return false;
+            //return Physics.BoxCast(transform.position, _boxCastHalf, new Vector3(0,0,1), out EatCastHit, Quaternion.identity, 20f, _victimLayerIndex);
+        }
+        public void TakeDamage(float damage, Vector3 BounceDirection)
+        {
+            // Bail before the knockback too. Applying it while invincible let a hazard shove the
+            // player around repeatedly during the very window meant to protect them.
+            if (IsInvincible) return;
+
+            // Replace horizontal velocity rather than adding to it. The player is usually running
+            // into the hazard, so adding would partly cancel the push out.
+            Vector3 v = RB.linearVelocity;
+            v.x = BounceDirection.x;
+            v.y = Mathf.Max(v.y, 0f) + BounceDirection.y;
+            RB.linearVelocity = v;
+
+            _knockbackUntil = Time.time + _knockbackTime;
+
+            // Blood is the health pool, so a hit spends blood. RemoveBlood ends the run itself
+            // when it reaches zero, which is why there is no death check here. Instance rather
+            // than Exists, because Exists stays false until something forces the lazy creation.
+            GameManager.Instance.RemoveBlood(damage);
+
+            StartCoroutine(InvincibilityTime());
+        }
+        public IEnumerator InvincibilityTime()
+        {
+            IsInvincible = true;
+            yield return new WaitForSeconds(_invincibilityTime);
+            IsInvincible = false;
         }
     }
 }
