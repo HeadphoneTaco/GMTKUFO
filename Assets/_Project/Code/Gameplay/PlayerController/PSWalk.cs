@@ -16,16 +16,32 @@ namespace _Project.Code.Gameplay.PlayerController
         public void Enter()
         {
             // play walk animation
+            _player.MyAnimator.PlayRunning();
             EventManager.DIEvent += ChangeDI;
             Debug.Log("State Entered: Walk");
         }
 
         public void Execute()
         {
+            // Automatic bite, checked before the ground test so walking into someone grabs them
+            // rather than being overridden by a fall on the same frame.
+            if (_player.CheckForVictims())
+            {
+                _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateEating);
+                return;
+            }
+
             if (!_player.IsGrounded()) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateFalling);
-            Vector3 v = _player.RB.linearVelocity;
-            v.x = _player.WalkSpeed * _player.DirectionalInput.x;
-            _player.RB.linearVelocity = v;
+
+            // Leave horizontal velocity alone briefly after a hit. Assigning x from input every
+            // frame would delete the knockback on the same frame the hazard applied it, which
+            // makes a hazard look like it does nothing but drain health.
+            if (!_player.IsKnockedBack)
+            {
+                Vector3 v = _player.RB.linearVelocity;
+                v.x = _player.WalkSpeed * _player.DirectionalInput.x;
+                _player.RB.linearVelocity = v;
+            }
             _player.IncreaseBatTime();
         }
 
@@ -39,6 +55,10 @@ namespace _Project.Code.Gameplay.PlayerController
         {
             _player.ChangeDI(direction);
             if (direction.x == 0) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateIdle);
+        }
+
+        public void FixedUpdate()
+        {
         }
     }
 }

@@ -2,38 +2,62 @@ using UnityEngine;
 
 namespace _Project.Code.Gameplay
 {
-    // Thin animation driver. PlayerController owns one of these (like its state machine)
-    // and the player states call these methods at the right moments. Not a MonoBehaviour:
-    // it just wraps an Animator and turns game state into animator parameters.
+    // Drives the player's visuals. The player object holds two models (humanoid vampire + bat),
+    // each with its own Animator. Marina's animations are one controller per action, so humanoid
+    // states swap the vampire Animator's runtimeAnimatorController, and transforming toggles which
+    // model is visible. PlayerController owns one of these and the states call into it.
     public class PlayerAnimator
     {
-        private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
-        private static readonly int Velocity = Animator.StringToHash("Velocity");
-        private static readonly int Jump = Animator.StringToHash("Jump");
+        private readonly GameObject _humanoidModel;
+        private readonly GameObject _batModel;
+        private readonly Animator _humanoidAnim;
 
-        private readonly Animator _anim;
+        private readonly RuntimeAnimatorController _idle;
+        private readonly RuntimeAnimatorController _running;
+        private readonly RuntimeAnimatorController _falling;
+        private readonly RuntimeAnimatorController _landing;
+        private readonly RuntimeAnimatorController _attacking;
 
-        public PlayerAnimator(Animator anim)
+        public PlayerAnimator(
+            GameObject humanoidModel, Animator humanoidAnim, GameObject batModel,
+            RuntimeAnimatorController idle, RuntimeAnimatorController running,
+            RuntimeAnimatorController falling, RuntimeAnimatorController landing,
+            RuntimeAnimatorController attacking)
         {
-            _anim = anim;
+            _humanoidModel = humanoidModel;
+            _humanoidAnim = humanoidAnim;
+            _batModel = batModel;
+            _idle = idle;
+            _running = running;
+            _falling = falling;
+            _landing = landing;
+            _attacking = attacking;
         }
 
-        public void SetGrounded(bool grounded)
+        // Humanoid actions: swap the vampire Animator's controller to Marina's matching clip.
+        public void PlayIdle() => SetHumanoid(_idle);
+        public void PlayRunning() => SetHumanoid(_running);
+        public void PlayFalling() => SetHumanoid(_falling);
+        public void PlayLanding() => SetHumanoid(_landing);
+        public void PlayAttack() => SetHumanoid(_attacking);
+
+        private void SetHumanoid(RuntimeAnimatorController controller)
         {
-            if (_anim == null) return;
-            _anim.SetBool(IsGrounded, grounded);
+            if (_humanoidAnim == null || controller == null) return;
+            _humanoidAnim.runtimeAnimatorController = controller;
         }
 
-        public void SetSpeed(float speed)
+        // Transform: show one rig and hide the other. Call at the point the transition effect hides the swap.
+        public void ShowHumanoid()
         {
-            if (_anim == null) return;
-            _anim.SetFloat(Velocity, speed);
+            if (_batModel != null) _batModel.SetActive(false);
+            if (_humanoidModel != null) _humanoidModel.SetActive(true);
         }
 
-        public void PlayJump()
+        public void ShowBat()
         {
-            if (_anim == null) return;
-            _anim.SetTrigger(Jump);
+            if (_humanoidModel != null) _humanoidModel.SetActive(false);
+            if (_batModel != null) _batModel.SetActive(true);
         }
     }
 }

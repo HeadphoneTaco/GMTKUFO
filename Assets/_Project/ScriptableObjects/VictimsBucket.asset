@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9905e5f181904194ad6cb66e08c9fccd, type: 3}
+  m_Name: VictimsBucket
+  m_EditorClassIdentifier: CoreUtils::CoreUtils.AssetBuckets.PrefabBucket
+  m_BucketName: 
+  m_Sources:
+  - {fileID: 102900000, guid: 6c150feb2a6e6e44da31c931e61ff98d, type: 3}
+  m_AssetRefs:
+  - Name: character_female_16
+    Guid: 000ca41548624624ba3139df6468f025
+    Asset: {fileID: 7151658613031668016, guid: 000ca41548624624ba3139df6468f025, type: 3}
+  - Name: character_07
+    Guid: 0ab60ec01b2e96e47a1aa0ec6c37bbad
+    Asset: {fileID: 1014058424789514585, guid: 0ab60ec01b2e96e47a1aa0ec6c37bbad, type: 3}
+  - Name: character_12
+    Guid: 0ef672fe10382494daacacc964b53e27
+    Asset: {fileID: 8238617843950543468, guid: 0ef672fe10382494daacacc964b53e27, type: 3}
+  - Name: character_female_11
+    Guid: 131813abffec8d24f8e6478d7ea229df
+    Asset: {fileID: 5628219208772817353, guid: 131813abffec8d24f8e6478d7ea229df, type: 3}
+  - Name: character_female_04
+    Guid: 1b23e844796ba514e9b9e97995cbf7ec
+    Asset: {fileID: 2496348196310918065, guid: 1b23e844796ba514e9b9e97995cbf7ec, type: 3}
+  - Name: character_02
+    Guid: 1e6892618d215d94989168d6ab52cdbc
+    Asset: {fileID: 2091280517138099280, guid: 1e6892618d215d94989168d6ab52cdbc, type: 3}
+  - Name: character_female_07
+    Guid: 1fcb5bb48fb169248a62502654c23678
+    Asset: {fileID: 1827832337671550152, guid: 1fcb5bb48fb169248a62502654c23678, type: 3}
+  - Name: character_03
+    Guid: 26b1c18493c73314d987f66dcc70257b
+    Asset: {fileID: 4625203648138137617, guid: 26b1c18493c73314d987f66dcc70257b, type: 3}
+  - Name: character_female_09
+    Guid: 282f884220342fa46af0107c18586de2
+    Asset: {fileID: 2386813408642139407, guid: 282f884220342fa46af0107c18586de2, type: 3}
+  - Name: character_14
+    Guid: 3f7ba29b2fe41e24e9bb9679a04d1246
+    Asset: {fileID: 4691102730000029314, guid: 3f7ba29b2fe41e24e9bb9679a04d1246, type: 3}
+  - Name: character_female_15
+    Guid: 41d1478b42239444ea8fb11353de263f
+    Asset: {fileID: 2689422232650652577, guid: 41d1478b42239444ea8fb11353de263f, type: 3}
+  - Name: character_female_06
+    Guid: 424cadf761e7a064ca359db5df631aa6
+    Asset: {fileID: 4247215238255678085, guid: 424cadf761e7a064ca359db5df631aa6, type: 3}
+  - Name: character_01
+    Guid: 45aeb75ed0484e646a57ae323088c880
+    Asset: {fileID: 1826646886524784385, guid: 45aeb75ed0484e646a57ae323088c880, type: 3}
+  - Name: character_11
+    Guid: 4bf5e94bd22f48f4195b4a0b8d8320c3
+    Asset: {fileID: 343660581600120643, guid: 4bf5e94bd22f48f4195b4a0b8d8320c3, type: 3}
+  - Name: character_09
+    Guid: 6b39645da1cbd414ca57e621b0a4dfe7
+    Asset: {fileID: 4607037812057525569, guid: 6b39645da1cbd414ca57e621b0a4dfe7, type: 3}
+  - Name: character_05
+    Guid: 7323e2e14e91bfd4d91044eca3236aeb
+    Asset: {fileID: 6336505136977407896, guid: 7323e2e14e91bfd4d91044eca3236aeb, type: 3}
+  - Name: character_female_05
+    Guid: 79f31bf090f9afa4caad88558d57a733
+    Asset: {fileID: 2356239269339087992, guid: 79f31bf090f9afa4caad88558d57a733, type: 3}
+  - Name: character_female_14
+    Guid: 7c2c5ed4add18cc47b83967706c0d266
+    Asset: {fileID: 3773327374481433291, guid: 7c2c5ed4add18cc47b83967706c0d266, type: 3}
+  - Name: character_female_10
+    Guid: 833f2f98c1dffac4b9cade866634e99b
+    Asset: {fileID: 6874991726880272055, guid: 833f2f98c1dffac4b9cade866634e99b, type: 3}
+  - Name: character_female_02
+    Guid: 8440fa2445a759d458b62921f73c5434
+    Asset: {fileID: 5187877640971917374, guid: 8440fa2445a759d458b62921f73c5434, type: 3}
+  - Name: character_female_03
+    Guid: 9c078c3ad716c424780bba441f71ce4c
+    Asset: {fileID: 8819839997929897171, guid: 9c078c3ad716c424780bba441f71ce4c, type: 3}
+  - Name: character_female_08
+    Guid: a61bfa9106c28e345b2ac7965864986b
+    Asset: {fileID: 1436334882134830260, guid: a61bfa9106c28e345b2ac7965864986b, type: 3}
+  - Name: character_female_13
+    Guid: b70b610fc13cb254e8408a8af39917d8
+    Asset: {fileID: 2577636183434383573, guid: b70b610fc13cb254e8408a8af39917d8, type: 3}
+  - Name: character_10
+    Guid: c541e29c9b888d4408811b2f5424c5d7
+    Asset: {fileID: 2333526895759368972, guid: c541e29c9b888d4408811b2f5424c5d7, type: 3}
+  - Name: character_06
+    Guid: d013245a09c66084c86673c43a218c78
+    Asset: {fileID: 7392630987102047537, guid: d013245a09c66084c86673c43a218c78, type: 3}
+  - Name: character_08
+    Guid: e5e9af480cb2c904fb62e2b0cc245de6
+    Asset: {fileID: 100783204191415507, guid: e5e9af480cb2c904fb62e2b0cc245de6, type: 3}
+  - Name: character_16
+    Guid: e65cfafdc23fedf4493b11f40b4cdb67
+    Asset: {fileID: 4206990738632376276, guid: e65cfafdc23fedf4493b11f40b4cdb67, type: 3}
+  - Name: character_15
+    Guid: e6b267d247d3476499922aca5252bfa6
+    Asset: {fileID: 6335149416818253808, guid: e6b267d247d3476499922aca5252bfa6, type: 3}
+  - Name: character_13
+    Guid: ebe1fda18b02fb54b94cd0017590cd99
+    Asset: {fileID: 3512354762760861207, guid: ebe1fda18b02fb54b94cd0017590cd99, type: 3}
+  - Name: character_female_12
+    Guid: f39561b096878c9499bdb45c08924aa8
+    Asset: {fileID: 7595297819216989361, guid: f39561b096878c9499bdb45c08924aa8, type: 3}
+  - Name: character_04
+    Guid: fc76f015f24c8774cad46f914f78159c
+    Asset: {fileID: 7604370492965946032, guid: fc76f015f24c8774cad46f914f78159c, type: 3}
+  m_ManualUpdate: 0

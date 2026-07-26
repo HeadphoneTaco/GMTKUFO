@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2005632322395743463
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -145.58484
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00001028708
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4733973366537999864, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4a7769f9991889147a4fee2c36f62682, type: 2}
+    - target: {fileID: -4733973366537999864, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4a7769f9991889147a4fee2c36f62682, type: 2}
+    - target: {fileID: 919132149155446097, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_Name
+      value: KangarooHazard
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d7db9d972d97ee5439f067c0882340bd, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3384335494171159596}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4351477327876470987}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8190508523156776373}
+  m_SourcePrefab: {fileID: 100100000, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+--- !u!1 &1662960937356597686 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+  m_PrefabInstance: {fileID: 2005632322395743463}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3384335494171159596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662960937356597686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52f4e48be48dc3043a50f71a4d4f4681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Obstacle
+  _damage: 25
+  _pushStrength: 6
+  _yMultiplier: 1
+  _minUpward: 0.4
+--- !u!65 &4351477327876470987
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662960937356597686}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.9877934, z: 0.9160916}
+  m_Center: {x: 1.02936314e-16, y: 1.0332904, z: -0.069743484}
+--- !u!114 &8190508523156776373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662960937356597686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdd1b58a91427c244a19be6de540d6f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HazardAI
+  _idleMode: 1
+  _patrolRange: 6
+  _patrolSpeed: 2
+  _patrolPause: 0.75
+  _sightRange: 12
+  _loseRange: 18
+  _chaseSpeed: 4
+  _maxChaseTime: 5
+  _leashFromHome: 25
+  _reacquireDelay: 2
+  _returnHome: 1
+  _stopAtLedges: 1
+  _groundLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  _ledgeProbeAhead: 1.2
+  _turnToFaceMovement: 1
+  _yawFacingRight: 90
+  _yawFacingLeft: -90
+  _turnSpeed: 540
+  _animator: {fileID: 5386298907132172662}
+  _idleController: {fileID: 9100000, guid: d7db9d972d97ee5439f067c0882340bd, type: 2}
+  _patrolController: {fileID: 9100000, guid: 709fcaaa44294394098b33af698e3a7b, type: 2}
+  _chaseController: {fileID: 9100000, guid: c83e89618dfac0f4f95d7b9d0056f9d2, type: 2}
+  _drawGizmos: 1
+--- !u!95 &5386298907132172662 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 102c435ad55d1ca47990e8ed085e9d88, type: 3}
+  m_PrefabInstance: {fileID: 2005632322395743463}
+  m_PrefabAsset: {fileID: 0}
