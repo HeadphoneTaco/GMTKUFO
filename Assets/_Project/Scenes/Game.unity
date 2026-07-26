@@ -957,7 +957,7 @@ MonoBehaviour:
   _target: {fileID: 0}
   _offset: {x: 0, y: 0.08, z: -11.61}
   _smoothTime: 0.25
-  _followY: 0
+  _followY: 1
   _deadzoneUp: 1.5
   _deadzoneDown: 3
   _verticalSmoothTime: 0.45
