@@ -23,7 +23,18 @@ public class PSBat : IState
     public void Execute()
     {
         if (_player.ReduceBatTime()) _player.MyStateMachine.ChangeState(_player.MyStateMachine.StateMist);
-        _player.RB.linearVelocity += _player.FlySpeed * Time.deltaTime * (Vector3)_player.DirectionalInput;
+
+        // FlySpeed is an acceleration, so this line compounds every frame. With gravity off and
+        // no damping there was nothing to stop it, and the player hit roughly 60 units per second
+        // by the end of the bat meter. Clamping the result gives flight a terminal velocity.
+        //
+        // This also keeps collisions honest. The rigidbody uses discrete detection, which only
+        // tests for overlap at the end of each physics step, so anything moving further than the
+        // thickness of a wall in one step passes straight through it. At a 0.02 timestep, 60 u/s
+        // is 1.2 units of travel per step, enough to tunnel through most bounding geometry.
+        Vector3 velocity = _player.RB.linearVelocity;
+        velocity += _player.FlySpeed * Time.deltaTime * (Vector3)_player.DirectionalInput;
+        _player.RB.linearVelocity = Vector3.ClampMagnitude(velocity, _player.MaxFlySpeed);
     }
 
     public void Exit()
