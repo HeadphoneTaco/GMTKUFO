@@ -45,6 +45,27 @@ namespace _Project.Code.Gameplay.PlayerController
         /// <summary>Bat time left as 0 to 1, for the HUD meter. Guards a zero max, which would divide by zero.</summary>
         public float BatTimeNormalized => _maxBatTime <= 0f ? 0f : Mathf.Clamp01(_currentBatTime / _maxBatTime);
 
+        [Header("Facing")]
+        [Tooltip("Off: the model keeps whatever rotation it was placed with and never turns.")]
+        [SerializeField] private bool _turnToFaceMovement = true;
+
+        [Tooltip("Y rotation when moving right. The player is authored at 90, which points the " +
+                 "model's forward down positive X.")]
+        [SerializeField] private float _yawFacingRight = 90f;
+
+        [Tooltip("Y rotation when moving left.")]
+        [SerializeField] private float _yawFacingLeft = -90f;
+
+        [Tooltip("Degrees per second for the turn. 0 snaps instantly. 720 is a brisk half turn in " +
+                 "a quarter second.")]
+        [SerializeField] private float _turnSpeed = 720f;
+
+        [Tooltip("Input below this counts as neutral, so a stick resting slightly off centre does " +
+                 "not flip him back and forth.")]
+        [SerializeField] private float _turnInputDeadzone = 0.1f;
+
+        private float _targetYaw;
+
         [Header("Jump")]
         [Tooltip("Upward velocity applied when jumping from the ground.")]
         [SerializeField] private float _jumpForce = 8f;
@@ -112,6 +133,10 @@ namespace _Project.Code.Gameplay.PlayerController
             // Side-scroller: keep the body on the XY plane and stop it tipping over
             RB.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
             ConfigureGroundCheck();
+
+            // Hold whatever facing the player was placed with until input says otherwise. Left at
+            // zero he would swing round to face the camera on the first frame.
+            _targetYaw = transform.eulerAngles.y;
         }
 
         /// <summary>
@@ -168,6 +193,35 @@ namespace _Project.Code.Gameplay.PlayerController
         public void Update()
         {
             MyStateMachine.Execute();
+            UpdateFacing();
+        }
+
+        /// <summary>
+        /// Turns the whole player to face the direction of travel.
+        ///
+        /// Driven by input rather than velocity, so the turn happens the instant the stick moves
+        /// rather than after the body has picked up speed. Facing is held when input returns to
+        /// neutral, so stopping does not snap him back to a default direction.
+        ///
+        /// Safe to rotate the root: the ground ray casts straight down, the victim overlap box
+        /// uses Quaternion.identity, and the camera is not parented to the player, so none of them
+        /// care which way this is pointing.
+        /// </summary>
+        private void UpdateFacing()
+        {
+            if (!_turnToFaceMovement) return;
+
+            float x = DirectionalInput.x;
+            if (Mathf.Abs(x) > _turnInputDeadzone)
+                _targetYaw = x > 0f ? _yawFacingRight : _yawFacingLeft;
+
+            Quaternion target = Quaternion.Euler(0f, _targetYaw, 0f);
+
+            // Rotation is frozen on the rigidbody, so assigning the transform directly is safe and
+            // will not be fought by physics.
+            transform.rotation = _turnSpeed <= 0f
+                ? target
+                : Quaternion.RotateTowards(transform.rotation, target, _turnSpeed * Time.deltaTime);
         }
         void FixedUpdate()
         {
